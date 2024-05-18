@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Event {
@@ -16,4 +16,9 @@ export class Event {
 
   @Column()
   address: string;
+
+  @BeforeUpdate()
+  formatWhenField() {
+    return new Date(this.when);
+  }
 }
