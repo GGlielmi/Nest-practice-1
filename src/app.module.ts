@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EventsController } from './events/events.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Event } from './events/entities/Event.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
+import { EventsModule } from './events/Event.module';
 
 @Module({
   imports: [
@@ -24,13 +23,14 @@ import configuration from './config/configuration';
           username: 'postgres',
           password: 'example',
           database: 'nest-events',
-          entities: [Event],
+          autoLoadEntities: true,
           synchronize: env === 'development',
         };
       },
     }),
+    EventsModule,
   ],
-  controllers: [AppController, EventsController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
