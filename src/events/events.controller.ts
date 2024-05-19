@@ -8,12 +8,14 @@ import {
   Patch,
   Post,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateEventDto } from './dtos/CreateEvent.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsOrderValue, Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Event } from './entities/Event.entity';
 import { UpdateEventDto } from './dtos/UpdateEvent.dto';
+import { EventFindParams } from './params/eventFind.params';
 
 @Controller('events')
 export class EventsController {
@@ -28,14 +30,16 @@ export class EventsController {
     {
       orderBy,
       orderDirection = 'asc',
-      ...props
-    }: Event & {
-      orderBy: keyof CreateEventDto;
-      orderDirection: 'asc' | 'desc';
-    },
+      whenTo,
+      whenFrom,
+      ...entityProps
+    }: EventFindParams,
   ) {
     return this.eventRepository.find({
-      where: props,
+      where: {
+        ...entityProps,
+        when: whenFrom || whenTo ? Between(whenFrom, whenTo) : entityProps.when,
+      },
       ...(orderBy && { order: { [orderBy]: orderDirection } }),
     });
   }

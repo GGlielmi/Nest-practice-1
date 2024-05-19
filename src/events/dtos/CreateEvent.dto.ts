@@ -1,6 +1,6 @@
 export class CreateEventDto {
   name: string;
   description: string;
-  when: string;
+  when: Date;
   address: string;
 }
