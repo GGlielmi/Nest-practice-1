@@ -8,7 +8,6 @@ import {
   Patch,
   Post,
   Query,
-  ValidationPipe,
 } from '@nestjs/common';
 import { CreateEventDto } from './dtos/CreateEvent.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -33,7 +32,7 @@ export class EventsController {
       whenTo,
       whenFrom,
       ...entityProps
-    }: EventFindParams,
+    }: EventFindParams, // a class is needed to use more functionality besides typing, like validation
   ) {
     return this.eventRepository.find({
       where: {
