@@ -1,4 +1,11 @@
-import { BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  AfterLoad,
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Event {
@@ -17,8 +24,23 @@ export class Event {
   @Column()
   address: string;
 
+  @Column({ type: 'time', default: '01:00:00' })
+  duration: string;
+
+  finishDate: Date;
+  @AfterLoad()
+  setFinishTime() {
+    const [hours, minutes, seconds] = this.duration.split(':');
+    const finishDate = new Date(this.when);
+    finishDate.setHours(finishDate.getHours() + +hours);
+    finishDate.setMinutes(finishDate.getMinutes() + +minutes);
+    finishDate.setSeconds(finishDate.getSeconds() + +seconds);
+    this.finishDate = finishDate;
+  }
+
+  @BeforeInsert()
   @BeforeUpdate()
   formatWhenField() {
-    return new Date(this.when);
+    this.when = new Date(this.when);
   }
 }
