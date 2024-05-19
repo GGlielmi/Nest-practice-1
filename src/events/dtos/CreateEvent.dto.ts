@@ -1,6 +1,6 @@
 export class CreateEventDto {
-  name: string;
-  description: string;
-  when: Date;
-  address: string;
+  name: string = undefined;
+  description: string = undefined;
+  when: Date = undefined;
+  address: string = undefined;
 }

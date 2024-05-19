@@ -14,7 +14,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import { Event } from './entities/Event.entity';
 import { UpdateEventDto } from './dtos/UpdateEvent.dto';
-import { EventFindParams } from './params/eventFind.params';
+import { EventFindParams } from './params/eventFind.dto';
 
 @Controller('events')
 export class EventsController {
