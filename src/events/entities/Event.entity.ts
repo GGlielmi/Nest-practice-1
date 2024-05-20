@@ -4,6 +4,7 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  ILike,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -15,7 +16,13 @@ export class Event {
   @Column()
   name: string;
 
-  @Column({ length: 100 })
+  @Column({
+    length: 100,
+    transformer: {
+      from: (value) => value,
+      to: (value) => ILike(`%${value}%`),
+    },
+  })
   description: string;
 
   @Column()
