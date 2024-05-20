@@ -23,6 +23,7 @@ import { EventsModule } from './events/Event.module';
           username: 'postgres',
           password: 'example',
           database: 'nest-events',
+          // logging: true,
           autoLoadEntities: true,
           synchronize: env === 'development',
         };

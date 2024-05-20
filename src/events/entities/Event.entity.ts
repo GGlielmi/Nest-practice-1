@@ -1,29 +1,32 @@
+import { DOLAR_COST } from 'src/constants';
 import {
   AfterLoad,
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
-  ILike,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
 export class Event {
   @PrimaryGeneratedColumn('uuid') // with autoincrement
-  id: number;
+  id: string;
 
   @Column()
   name: string;
 
+  @Column({ length: 100 })
+  description: string;
+
   @Column({
-    length: 100,
+    default: 0,
     transformer: {
       from: (value) => value,
-      to: (value) => ILike(`%${value}%`),
+      to: (value) => value * DOLAR_COST,
     },
   })
-  description: string;
+  estimatedCost: number;
 
   @Column()
   when: Date;
