@@ -14,8 +14,10 @@ import { CreateAttendeeDto } from '../dto/create-attendee.dto';
 import { UpdateAttendeeDto } from '../dto/update-attendee.dto';
 import { EventsService } from 'src/events/services/events.service';
 import { FindAttendeeDto } from '../dto/find-attendee.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('attendees')
+@ApiTags('Attendees')
 export class AttendeesController {
   constructor(
     private readonly attendeesService: AttendeesService,

@@ -13,8 +13,10 @@ import { CreateEventDto } from '../dtos/CreateEvent.dto';
 import { UpdateEventDto } from '../dtos/UpdateEvent.dto';
 import { EventFindParams } from '../params/eventFind.dto';
 import { EventsService } from '../services/events.service';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('events')
+@ApiTags('Events')
 export class EventsController {
   constructor(private readonly eventService: EventsService) {}
 
