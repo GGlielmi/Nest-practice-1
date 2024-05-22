@@ -9,6 +9,9 @@ export class Attendee {
   @Column()
   name: string;
 
+  @Column()
+  age: number;
+
   @ManyToMany(() => Event)
   events: Event[];
 }

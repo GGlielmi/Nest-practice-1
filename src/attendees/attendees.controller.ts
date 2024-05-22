@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { AttendeesService } from './attendees.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 import { EventsService } from 'src/events/services/events.service';
+import { FindAttendeeDto } from './dto/find-attendee.dto';
 
 @Controller('attendees')
 export class AttendeesController {
@@ -36,25 +38,27 @@ export class AttendeesController {
   }
 
   @Get()
-  findAll() {
-    return this.attendeesService.findAll();
+  findAll(@Query() findAttendeeDto: FindAttendeeDto) {
+    return this.attendeesService.findAll(findAttendeeDto);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.attendeesService.findOne(+id);
+    return this.attendeesService.findById(id);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateAttendeeDto: UpdateAttendeeDto,
   ) {
-    return this.attendeesService.update(+id, updateAttendeeDto);
+    const result = await this.attendeesService.update(id, updateAttendeeDto);
+    if (!result.affected) throw new NotFoundException();
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.attendeesService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const result = await this.attendeesService.remove(id);
+    if (!result.affected) throw new NotFoundException();
   }
 }

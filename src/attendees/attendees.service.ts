@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Attendee } from './entities/attendee.entity';
 import { Repository } from 'typeorm';
 import { Event } from 'src/events/entities/Event.entity';
+import { FindAttendeeDto } from './dto/find-attendee.dto';
 
 @Injectable()
 export class AttendeesService {
@@ -21,19 +22,19 @@ export class AttendeesService {
     return this.attendeeRepository.save(createAttendeeDto);
   }
 
-  findAll() {
-    return `This action returns all attendees`;
+  findAll(findAttendeeDto: FindAttendeeDto) {
+    return this.attendeeRepository.findBy(findAttendeeDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} attendee`;
+  findById(id: string) {
+    return this.attendeeRepository.findOneBy({ id });
   }
 
-  update(id: number, updateAttendeeDto: UpdateAttendeeDto) {
-    return `This action updates a #${id} attendee`;
+  update(id: string, updateAttendeeDto: UpdateAttendeeDto) {
+    return this.attendeeRepository.update({ id }, updateAttendeeDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} attendee`;
+  remove(id: string) {
+    return this.attendeeRepository.delete(id);
   }
 }
