@@ -7,5 +7,5 @@ export class CreateAttendeeDto {
   @Min(0)
   age: number;
 
-  eventsIds: string[];
+  eventsIds: number[];
 }

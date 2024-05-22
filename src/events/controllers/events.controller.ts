@@ -34,14 +34,14 @@ export class EventsController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() input: UpdateEventDto) {
+  async update(@Param('id') id: number, @Body() input: UpdateEventDto) {
     const foundEvent = await this.eventService.findById(id);
     if (!foundEvent) throw new NotFoundException();
     return this.eventService.update(id, { ...foundEvent, ...input });
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: number) {
     const result = await this.eventService.delete(id);
     if (!result.affected) throw new NotFoundException();
   }

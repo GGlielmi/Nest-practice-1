@@ -10,7 +10,7 @@ const getTimeThousandYearsFromNow = () =>
 
 export class EventFindParams extends PartialType(
   class Asd extends CreateEventDto {
-    id?: string | string[];
+    id?: number | number[];
   },
 ) {
   @ApiProperty({ type: String, required: false })

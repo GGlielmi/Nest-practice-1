@@ -13,8 +13,8 @@ import {
 
 @Entity()
 export class Event {
-  @PrimaryGeneratedColumn('uuid') // with autoincrement
-  id: string;
+  @PrimaryGeneratedColumn() // with autoincrement
+  id: number;
 
   @Column()
   name: string;

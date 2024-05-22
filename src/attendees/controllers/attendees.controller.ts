@@ -45,13 +45,13 @@ export class AttendeesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.attendeesService.findById(id);
   }
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateAttendeeDto: UpdateAttendeeDto,
   ) {
     const result = await this.attendeesService.update(id, updateAttendeeDto);
@@ -59,15 +59,15 @@ export class AttendeesController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: number) {
     const result = await this.attendeesService.remove(id);
     if (!result.affected) throw new NotFoundException();
   }
 
   @Get(':attendeeId/:eventId')
   async addAttendeeToEvent(
-    @Param('attendeeId') attendeeId: string,
-    @Param('eventId') eventId: string,
+    @Param('attendeeId') attendeeId: number,
+    @Param('eventId') eventId: number,
   ) {
     const event = await this.eventsService.findById(eventId);
     if (!event) throw new NotFoundException();

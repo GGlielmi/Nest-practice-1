@@ -46,15 +46,15 @@ export class EventsService {
     return this.eventRepository.save(input);
   }
 
-  async findById(id: string) {
+  async findById(id: number) {
     return this.eventRepository.findOneBy({ id });
   }
 
-  async update(id: string, input: UpdateEventDto) {
+  async update(id: number, input: UpdateEventDto) {
     return this.eventRepository.save({ ...input, id });
   }
 
-  async delete(id: string) {
+  async delete(id: number) {
     return this.eventRepository.delete(id);
   }
 }

@@ -26,15 +26,15 @@ export class AttendeesService {
     return this.attendeeRepository.findBy(findAttendeeDto);
   }
 
-  findById(id: string) {
+  findById(id: number) {
     return this.attendeeRepository.findOneBy({ id });
   }
 
-  update(id: string, updateAttendeeDto: UpdateAttendeeDto) {
+  update(id: number, updateAttendeeDto: UpdateAttendeeDto) {
     return this.attendeeRepository.update({ id }, updateAttendeeDto);
   }
 
-  remove(id: string) {
+  remove(id: number) {
     return this.attendeeRepository.delete(id);
   }
 }
