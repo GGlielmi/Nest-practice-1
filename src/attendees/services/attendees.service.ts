@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAttendeeDto } from './dto/create-attendee.dto';
-import { UpdateAttendeeDto } from './dto/update-attendee.dto';
+import { CreateAttendeeDto } from '../dto/create-attendee.dto';
+import { UpdateAttendeeDto } from '../dto/update-attendee.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Attendee } from './entities/attendee.entity';
+import { Attendee } from '../entities/attendee.entity';
 import { Repository } from 'typeorm';
 import { Event } from 'src/events/entities/Event.entity';
-import { FindAttendeeDto } from './dto/find-attendee.dto';
+import { FindAttendeeDto } from '../dto/find-attendee.dto';
 
 @Injectable()
 export class AttendeesService {

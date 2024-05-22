@@ -38,7 +38,10 @@ export class Event {
   address: string;
 
   @Column({ type: 'time', default: '01:00:00' })
-  duration: string;
+  duration?: string;
+
+  @Column({ default: 0 })
+  minRequiredAge?: number;
 
   @ManyToMany(
     () => Attendee,

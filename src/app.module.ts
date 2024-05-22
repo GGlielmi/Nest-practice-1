@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { EventsModule } from './events/Event.module';
-import { AttendeesModule } from './attendees/services/attendees.module';
+import { AttendeesModule } from './attendees/attendees.module';
 import config from 'src/config/configuration';
 
 @Module({

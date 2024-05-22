@@ -9,11 +9,11 @@ import {
   NotFoundException,
   Query,
 } from '@nestjs/common';
-import { AttendeesService } from './attendees.service';
-import { CreateAttendeeDto } from './dto/create-attendee.dto';
-import { UpdateAttendeeDto } from './dto/update-attendee.dto';
+import { AttendeesService } from '../services/attendees.service';
+import { CreateAttendeeDto } from '../dto/create-attendee.dto';
+import { UpdateAttendeeDto } from '../dto/update-attendee.dto';
 import { EventsService } from 'src/events/services/events.service';
-import { FindAttendeeDto } from './dto/find-attendee.dto';
+import { FindAttendeeDto } from '../dto/find-attendee.dto';
 
 @Controller('attendees')
 export class AttendeesController {
@@ -60,5 +60,17 @@ export class AttendeesController {
   async remove(@Param('id') id: string) {
     const result = await this.attendeesService.remove(id);
     if (!result.affected) throw new NotFoundException();
+  }
+
+  @Get(':attendeeId/:eventId')
+  async addAttendeeToEvent(
+    @Param('attendeeId') attendeeId: string,
+    @Param('eventId') eventId: string,
+  ) {
+    const event = await this.eventsService.findById(eventId);
+    if (!event) throw new NotFoundException();
+    const attendee = await this.attendeesService.findById(attendeeId);
+    event.attendees.push(attendee);
+    return this.eventsService.update(eventId, attendee);
   }
 }
