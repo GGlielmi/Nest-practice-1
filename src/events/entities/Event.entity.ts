@@ -1,3 +1,4 @@
+import { Attendee } from 'src/attendees/entities/attendee.entity';
 import { DOLAR_COST } from 'src/constants';
 import {
   AfterLoad,
@@ -5,6 +6,8 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -22,8 +25,8 @@ export class Event {
   @Column({
     default: 0,
     transformer: {
-      from: (value) => value,
-      to: (value) => value * DOLAR_COST,
+      from: (value) => value * DOLAR_COST,
+      to: (value) => value,
     },
   })
   estimatedCost: number;
@@ -36,6 +39,14 @@ export class Event {
 
   @Column({ type: 'time', default: '01:00:00' })
   duration: string;
+
+  @ManyToMany(
+    () => Attendee,
+    (attendee) => attendee.events, // this is necessary
+  )
+  // when using OneToMany, ManyToOne is mandatory on the other side
+  @JoinTable()
+  attendees: Attendee[];
 
   finishDate: Date;
   @AfterLoad()

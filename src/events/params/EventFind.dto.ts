@@ -8,12 +8,16 @@ const eventDtoKeys = Object.keys(new CreateEventDto());
 const getTimeThousandYearsFromNow = () =>
   new Date().getTime() + 1000 * 60 * 60 * 24 * 365.25 * 1000;
 
-export class EventFindParams extends PartialType(CreateEventDto) {
+export class EventFindParams extends PartialType(
+  class Asd extends CreateEventDto {
+    id?: string | string[];
+  },
+) {
   @ApiProperty({ type: String, required: false })
-  whenFrom = new Date(0);
+  whenFrom?: Date = new Date(0);
 
   @ApiProperty({ type: String, required: false })
-  whenTo = new Date(getTimeThousandYearsFromNow());
+  whenTo?: Date = new Date(getTimeThousandYearsFromNow());
 
   @Min(0)
   @Max(1_000_000)
@@ -30,7 +34,7 @@ export class EventFindParams extends PartialType(CreateEventDto) {
     enum: eventDtoKeys,
   })
   @IsIn(eventDtoKeys)
-  orderBy: keyof CreateEventDto;
+  orderBy?: keyof CreateEventDto;
 
   @ApiProperty({
     type: String,

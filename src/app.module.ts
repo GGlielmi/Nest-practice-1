@@ -2,34 +2,32 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { EventsModule } from './events/Event.module';
+import { AttendeesModule } from './attendees/services/attendees.module';
+import config from 'src/config/configuration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       load: [configuration],
+      expandVariables: true,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        const env = config.get('environment');
+      useFactory: () => {
+        const { database, environment } = config();
         return {
+          ...database,
           type: 'postgres',
-          host: 'localhost',
-          port: 5432,
-          username: 'postgres',
-          password: 'example',
-          database: 'nest-events',
-          // logging: true,
+          logging: true,
           autoLoadEntities: true,
-          synchronize: env === 'development',
+          synchronize: environment === 'development',
         };
       },
     }),
     EventsModule,
+    AttendeesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
