@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Attendee } from 'src/attendees/entities/attendee.entity';
 import { DOLAR_COST } from 'src/constants';
 import {
@@ -46,10 +47,22 @@ export class Event {
   @ManyToMany(
     () => Attendee,
     (attendee) => attendee.events, // this is necessary
+    {
+      // cascade: ['update'],
+      // eager: true,
+    },
   )
   // when using OneToMany, ManyToOne is mandatory on the other side
   @JoinTable()
   attendees: Attendee[];
+
+  validateAttendeeAge(attendee: Attendee) {
+    if (this.minRequiredAge > attendee.age) {
+      throw new BadRequestException(
+        `Attendee ${attendee.name} is underaged for desired event`,
+      );
+    }
+  }
 
   finishDate: Date;
   @AfterLoad()
@@ -66,5 +79,14 @@ export class Event {
   @BeforeUpdate()
   formatWhenField() {
     this.when = new Date(this.when);
+  }
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  validateAttendeesAge() {
+    // modifying only navigation props does not trigger this
+    (this.attendees || []).forEach((a) => {
+      this.validateAttendeeAge(a);
+    });
   }
 }

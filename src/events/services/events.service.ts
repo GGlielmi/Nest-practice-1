@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEventDto } from '../dtos/CreateEvent.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, ILike, In, Repository } from 'typeorm';
+import { Between, FindOptionsRelations, ILike, In, Repository } from 'typeorm';
 import { Event } from '../entities/Event.entity';
-import { UpdateEventDto } from '../dtos/UpdateEvent.dto';
 import { EventFindParams } from '../params/eventFind.dto';
 
 @Injectable()
@@ -23,6 +22,7 @@ export class EventsService {
       maxCost,
       ...entityProps
     }: EventFindParams, // a class is needed to use more functionality besides typing, like validation
+    relations?: FindOptionsRelations<Event>,
   ) {
     return this.eventRepository.find({
       where: {
@@ -39,22 +39,30 @@ export class EventsService {
             : entityProps.estimatedCost,
       },
       ...(orderBy && { order: { [orderBy]: orderDirection } }),
+      ...(relations && { relations }),
     });
   }
 
-  create(input: CreateEventDto) {
+  save(input: CreateEventDto) {
     return this.eventRepository.save(input);
   }
 
-  async findById(id: number) {
+  private async findById(id: number) {
     return this.eventRepository.findOneBy({ id });
   }
 
-  async update(id: number, input: UpdateEventDto) {
-    return this.eventRepository.save({ ...input, id });
+  async getById(id: number) {
+    const event = await this.findById(id);
+    if (!event) throw new NotFoundException();
+    return event;
+  }
+
+  async update(event: Event) {
+    return this.eventRepository.save(event);
   }
 
   async delete(id: number) {
-    return this.eventRepository.delete(id);
+    const result = await this.eventRepository.delete(id);
+    if (!result.affected) throw new NotFoundException();
   }
 }

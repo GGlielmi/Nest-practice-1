@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -30,19 +29,17 @@ export class EventsController {
 
   @Post()
   create(@Body() input: CreateEventDto) {
-    return this.eventService.create(input);
+    return this.eventService.save(input);
   }
 
   @Patch(':id')
   async update(@Param('id') id: number, @Body() input: UpdateEventDto) {
-    const foundEvent = await this.eventService.findById(id);
-    if (!foundEvent) throw new NotFoundException();
-    return this.eventService.update(id, { ...foundEvent, ...input });
+    const event = await this.eventService.getById(id);
+    return this.eventService.update(event);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: number) {
-    const result = await this.eventService.delete(id);
-    if (!result.affected) throw new NotFoundException();
+    return this.eventService.delete(id);
   }
 }
