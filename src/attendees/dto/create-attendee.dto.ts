@@ -1,4 +1,4 @@
-import { IsNotEmpty, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
 
 export class CreateAttendeeDto {
   @IsNotEmpty()
@@ -6,4 +6,8 @@ export class CreateAttendeeDto {
 
   @Min(0)
   age: number;
+
+  @IsOptional()
+  @IsNumber()
+  credit: number = 0;
 }

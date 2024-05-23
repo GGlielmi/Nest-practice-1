@@ -20,6 +20,9 @@ export class Attendee {
   @Column()
   age: number;
 
+  @Column({ default: 0 })
+  funds: number;
+
   @ManyToMany(() => Event, (event) => event.attendees)
   events: Event[];
 

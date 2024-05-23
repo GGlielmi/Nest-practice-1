@@ -30,7 +30,7 @@ export class Event {
       to: (value) => value,
     },
   })
-  estimatedCost: number;
+  cost: number;
 
   @Column()
   when: Date;

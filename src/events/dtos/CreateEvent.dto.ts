@@ -20,5 +20,5 @@ export class CreateEventDto {
   @IsOptional()
   @Min(0)
   @Max(1_000_000)
-  estimatedCost?: number = 0;
+  cost?: number = 0;
 }

@@ -17,6 +17,7 @@ import { Event } from '../entities/Event.entity';
 import { EventFindParams } from '../params/eventFind.dto';
 import { UpdateAttendeeDto } from 'src/attendees/dto/update-attendee.dto';
 import { AttendeesService } from 'src/attendees/services/attendees.service';
+import responseMessages from 'src/constants/responseMessages';
 
 @Injectable()
 export class EventsService {
@@ -47,10 +48,7 @@ export class EventsService {
           description: ILike(`%${entityProps.description}%`),
         }),
         when: whenFrom || whenTo ? Between(whenFrom, whenTo) : entityProps.when,
-        estimatedCost:
-          minCost || maxCost
-            ? Between(minCost, maxCost)
-            : entityProps.estimatedCost,
+        cost: minCost || maxCost ? Between(minCost, maxCost) : entityProps.cost,
       },
       ...(orderBy && { order: { [orderBy]: orderDirection } }),
       ...(relations && { relations }),
@@ -113,10 +111,15 @@ export class EventsService {
       (a) => a.attendeeId !== attendee.attendeeId,
     );
     if (newAttendeesList.length === event.attendees.length) {
+      throw new NotFoundException(responseMessages.events.attendeeNotInvited);
+    }
+
+    if (attendee.funds < event.cost) {
       throw new NotFoundException(
-        `The attendee ${attendee.name} is not scheluded to appear in this event`,
+        responseMessages.events.attendeeInsufficientFunds,
       );
     }
+
     this.eventRepository.save({ ...event, attendees: newAttendeesList });
   }
 }
