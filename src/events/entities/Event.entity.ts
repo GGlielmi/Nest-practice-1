@@ -15,7 +15,7 @@ import {
 @Entity()
 export class Event {
   @PrimaryGeneratedColumn() // with autoincrement
-  id: number;
+  eventId: number;
 
   @Column()
   name: string;
@@ -85,8 +85,6 @@ export class Event {
   @BeforeUpdate()
   validateAttendeesAge() {
     // modifying only navigation props does not trigger this
-    (this.attendees || []).forEach((a) => {
-      this.validateAttendeeAge(a);
-    });
+    (this.attendees || []).forEach(this.validateAttendeeAge);
   }
 }

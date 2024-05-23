@@ -1,15 +1,29 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateEventDto } from '../dtos/CreateEvent.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, FindOptionsRelations, ILike, In, Repository } from 'typeorm';
+import {
+  Between,
+  FindOptionsRelations,
+  FindOptionsSelect,
+  ILike,
+  In,
+  Repository,
+} from 'typeorm';
 import { Event } from '../entities/Event.entity';
 import { EventFindParams } from '../params/eventFind.dto';
+import { UpdateAttendeeDto } from 'src/attendees/dto/update-attendee.dto';
+import { AttendeesService } from 'src/attendees/services/attendees.service';
 
 @Injectable()
 export class EventsService {
   constructor(
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
+    private readonly attendeeService: AttendeesService,
   ) {}
 
   find(
@@ -27,7 +41,7 @@ export class EventsService {
     return this.eventRepository.find({
       where: {
         ...entityProps,
-        id:
+        eventId:
           entityProps.id instanceof Array ? In(entityProps.id) : entityProps.id,
         ...(entityProps.description && {
           description: ILike(`%${entityProps.description}%`),
@@ -47,22 +61,62 @@ export class EventsService {
     return this.eventRepository.save(input);
   }
 
-  private async findById(id: number) {
-    return this.eventRepository.findOneBy({ id });
+  private async findById(id: number, select?: FindOptionsSelect<Event>) {
+    return this.eventRepository.findOne({
+      where: { eventId: id },
+      select,
+      relations: [...(select?.['attendees'] ? ['attendees'] : [])],
+    });
   }
 
-  async getById(id: number) {
-    const event = await this.findById(id);
+  async getById(id: number, select?: FindOptionsSelect<Event>) {
+    const event = await this.findById(id, select);
     if (!event) throw new NotFoundException();
     return event;
   }
 
-  async update(event: Event) {
-    return this.eventRepository.save(event);
+  private async checkExistence(id: number) {
+    const exists = await this.eventRepository.existsBy({ eventId: id });
+    if (!exists) throw new NotFoundException();
+  }
+
+  async update(event: UpdateAttendeeDto) {
+    await this.checkExistence(event.id);
+    return this.eventRepository.save(event); // `.save()` inserts if doesn't exist
   }
 
   async delete(id: number) {
     const result = await this.eventRepository.delete(id);
     if (!result.affected) throw new NotFoundException();
+  }
+
+  async addAttendeeToEvent(attendeeId: number, eventId: number) {
+    const attendee = await this.attendeeService.getById(attendeeId);
+    const event = await this.getById(eventId, {
+      attendees: { attendeeId: true },
+    });
+    if (event.minRequiredAge > attendee.age) {
+      throw new BadRequestException(
+        `Attendee "${attendee.name}" is underaged for this event`,
+      );
+    }
+    event.attendees.push(attendee);
+    return this.eventRepository.save(event);
+  }
+
+  async removeAttendeeFromEvent(attendeeId: number, eventId: number) {
+    const attendee = await this.attendeeService.getById(attendeeId);
+    const event = await this.getById(eventId, {
+      attendees: { attendeeId: true },
+    });
+    const newAttendeesList = event.attendees.filter(
+      (a) => a.attendeeId !== attendee.attendeeId,
+    );
+    if (newAttendeesList.length === event.attendees.length) {
+      throw new NotFoundException(
+        `The attendee ${attendee.name} is not scheluded to appear in this event`,
+      );
+    }
+    this.eventRepository.save({ ...event, attendees: newAttendeesList });
   }
 }

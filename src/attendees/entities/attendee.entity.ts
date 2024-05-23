@@ -12,7 +12,7 @@ import {
 @Entity()
 export class Attendee {
   @PrimaryGeneratedColumn()
-  id: number;
+  attendeeId: number;
 
   @Column()
   name: string;
@@ -23,16 +23,18 @@ export class Attendee {
   @ManyToMany(() => Event, (event) => event.attendees)
   events: Event[];
 
+  private validateAttendeeAge(event: Event) {
+    if (event.minRequiredAge > this.age) {
+      throw new BadRequestException(
+        `Attendee "${this.name}" is underaged for desired event`,
+      );
+    }
+  }
+
   @BeforeInsert()
   @BeforeUpdate()
   validateAttendeesAge() {
     // HOOKS ARE CALLED WITH `.create()`
-    this.events.forEach((e) => {
-      if (e.minRequiredAge > this.age) {
-        throw new BadRequestException(
-          `Attendee "${this.name}" is underaged for desired event`,
-        );
-      }
-    });
+    (this.events || []).forEach(this.validateAttendeeAge);
   }
 }
