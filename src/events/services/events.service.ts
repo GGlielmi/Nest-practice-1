@@ -17,7 +17,7 @@ import { Event } from '../entities/Event.entity';
 import { EventFindParams } from '../params/eventFind.dto';
 import { UpdateAttendeeDto } from 'src/attendees/dto/update-attendee.dto';
 import { AttendeesService } from 'src/attendees/services/attendees.service';
-import responseMessages from 'src/constants/responseMessages';
+import { EventAttendeeService } from './eventAttendees.service';
 
 @Injectable()
 export class EventsService {
@@ -25,6 +25,7 @@ export class EventsService {
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
     private readonly attendeeService: AttendeesService,
+    private readonly eventAttendeeService: EventAttendeeService,
   ) {}
 
   find(
@@ -73,8 +74,8 @@ export class EventsService {
     return event;
   }
 
-  private async checkExistence(id: number) {
-    const exists = await this.eventRepository.existsBy({ eventId: id });
+  async checkExistence(eventId: number) {
+    const exists = await this.eventRepository.existsBy({ eventId });
     if (!exists) throw new NotFoundException();
   }
 
@@ -89,37 +90,16 @@ export class EventsService {
   }
 
   async addAttendeeToEvent(attendeeId: number, eventId: number) {
+    const event = await this.getById(eventId);
     const attendee = await this.attendeeService.getById(attendeeId);
-    const event = await this.getById(eventId, {
-      attendees: { attendeeId: true },
+    this.eventRepository.manager.transaction(async (manager) => {
+      await this.eventAttendeeService.create(event, attendee, manager);
+      attendee.funds -= event.cost;
+      await manager.save(attendee);
     });
-    if (event.minRequiredAge > attendee.age) {
-      throw new BadRequestException(
-        `Attendee "${attendee.name}" is underaged for this event`,
-      );
-    }
-    event.attendees.push(attendee);
-    return this.eventRepository.save(event);
   }
 
   async removeAttendeeFromEvent(attendeeId: number, eventId: number) {
-    const attendee = await this.attendeeService.getById(attendeeId);
-    const event = await this.getById(eventId, {
-      attendees: { attendeeId: true },
-    });
-    const newAttendeesList = event.attendees.filter(
-      (a) => a.attendeeId !== attendee.attendeeId,
-    );
-    if (newAttendeesList.length === event.attendees.length) {
-      throw new NotFoundException(responseMessages.events.attendeeNotInvited);
-    }
-
-    if (attendee.funds < event.cost) {
-      throw new NotFoundException(
-        responseMessages.events.attendeeInsufficientFunds,
-      );
-    }
-
-    this.eventRepository.save({ ...event, attendees: newAttendeesList });
+    await this.eventAttendeeService.delete(eventId, attendeeId);
   }
 }

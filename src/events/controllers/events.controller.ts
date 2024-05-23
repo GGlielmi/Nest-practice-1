@@ -39,7 +39,7 @@ export class EventsController {
   @Get(':id')
   findById(@Param('id') id: number): Promise<GetEvent> {
     return this.eventService.getById(id, {
-      attendees: { attendeeId: true },
+      eventAttendees: { attendeeId: true },
     });
   }
 

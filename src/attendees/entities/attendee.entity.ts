@@ -1,13 +1,6 @@
-import { BadRequestException } from '@nestjs/common';
-import { Event } from 'src/events/entities/Event.entity';
-import {
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { DOLAR_COST } from 'src/constants';
+import { EventAttendee } from 'src/events/entities/EventAttendee.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Attendee {
@@ -20,24 +13,15 @@ export class Attendee {
   @Column()
   age: number;
 
-  @Column({ default: 0 })
+  @Column({
+    default: 0,
+    transformer: {
+      from: (value) => value * DOLAR_COST,
+      to: (value) => value / DOLAR_COST,
+    },
+  })
   funds: number;
 
-  @ManyToMany(() => Event, (event) => event.attendees)
-  events: Event[];
-
-  private validateAttendeeAge(event: Event) {
-    if (event.minRequiredAge > this.age) {
-      throw new BadRequestException(
-        `Attendee "${this.name}" is underaged for desired event`,
-      );
-    }
-  }
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  validateAttendeesAge() {
-    // HOOKS ARE CALLED WITH `.create()`
-    (this.events || []).forEach(this.validateAttendeeAge);
-  }
+  @OneToMany(() => EventAttendee, (eventAttendee) => eventAttendee.attendee)
+  eventAttendees: EventAttendee[];
 }

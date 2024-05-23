@@ -40,7 +40,7 @@ export class AttendeesService {
     return attendee;
   }
 
-  private async checkExistence(id: number) {
+  async checkExistence(id: number) {
     const exists = await this.attendeeRepository.existsBy({ attendeeId: id });
     if (!exists) throw new NotFoundException();
   }

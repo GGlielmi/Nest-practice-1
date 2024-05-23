@@ -7,10 +7,10 @@ import {
   BeforeUpdate,
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { EventAttendee } from './EventAttendee.entity';
 
 @Entity()
 export class Event {
@@ -27,7 +27,7 @@ export class Event {
     default: 0,
     transformer: {
       from: (value) => value * DOLAR_COST,
-      to: (value) => value,
+      to: (value) => value / DOLAR_COST,
     },
   })
   cost: number;
@@ -44,17 +44,8 @@ export class Event {
   @Column({ default: 0 })
   minRequiredAge?: number;
 
-  @ManyToMany(
-    () => Attendee,
-    (attendee) => attendee.events, // this is necessary
-    {
-      // cascade: ['update'],
-      // eager: true,
-    },
-  )
-  // when using OneToMany, ManyToOne is mandatory on the other side
-  @JoinTable()
-  attendees: Attendee[];
+  @OneToMany(() => EventAttendee, (eventAttendee) => eventAttendee.event)
+  eventAttendees: EventAttendee[];
 
   validateAttendeeAge(attendee: Attendee) {
     if (this.minRequiredAge > attendee.age) {
@@ -79,12 +70,5 @@ export class Event {
   @BeforeUpdate()
   formatWhenField() {
     this.when = new Date(this.when);
-  }
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  validateAttendeesAge() {
-    // modifying only navigation props does not trigger this
-    (this.attendees || []).forEach(this.validateAttendeeAge);
   }
 }
