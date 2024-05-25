@@ -8,5 +8,6 @@ import { EventConsumable } from './entities/EVentConsumable.entity';
   imports: [TypeOrmModule.forFeature([EventConsumable])],
   controllers: [ConsumablesController],
   providers: [ConsumablesService],
+  exports: [ConsumablesService],
 })
 export class ConsumablesModule {}

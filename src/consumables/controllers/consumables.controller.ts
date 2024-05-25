@@ -6,9 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ConsumablesService } from '../services/consumables.service';
 import { CreateConsumableDto } from '../dto/create-consumable.dto';
+import { FindConsumableDto } from '../dto/find-consumable.dto';
 import { UpdateConsumableDto } from '../dto/update-consumable.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -25,14 +27,14 @@ export class ConsumablesController {
 
   @Get()
   @ApiOperation({ summary: 'Get consumables through http query' })
-  findAll() {
-    return this.consumablesService.findAll();
+  findAll(@Query() query: FindConsumableDto) {
+    return this.consumablesService.findAll(query);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get consumables by id' })
   findOne(@Param('id') id: string) {
-    return this.consumablesService.findOne(+id);
+    return this.consumablesService.findById(+id);
   }
 
   @Patch(':id')
