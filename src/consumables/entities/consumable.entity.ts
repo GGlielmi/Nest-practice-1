@@ -1,10 +1,10 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { EventConsumable } from './EVentConsumable.entity';
 
-enum ConsumableType {
-  DRINK,
-  FOOD,
-  SOUVENIR,
+export enum ConsumableType {
+  DRINK = 'dring',
+  FOOD = 'food',
+  SOUVENIR = 'souvenir',
 }
 
 @Entity()
