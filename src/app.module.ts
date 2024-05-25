@@ -6,6 +6,7 @@ import configuration from './config/configuration';
 import { EventsModule } from './events/Event.module';
 import { AttendeesModule } from './attendees/attendees.module';
 import { ConsumablesModule } from './consumables/consumables.module';
+import { ManufacturerModule } from './manufacturer/manufacturer.module';
 import config from 'src/config/configuration';
 
 @Module({
@@ -29,6 +30,7 @@ import config from 'src/config/configuration';
     EventsModule,
     AttendeesModule,
     ConsumablesModule,
+    ManufacturerModule,
   ],
   controllers: [],
   providers: [AppService],
