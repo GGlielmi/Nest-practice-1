@@ -28,5 +28,6 @@ import { EventConsumable } from 'src/consumables/entities/EVentConsumable.entity
     ConsumablesService,
     EventConsumableService,
   ],
+  exports: [EventsService],
 })
 export class EventsModule {}

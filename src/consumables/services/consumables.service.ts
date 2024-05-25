@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateConsumableDto } from '../dto/create-consumable.dto';
 import { UpdateConsumableDto } from '../dto/update-consumable.dto';
 import { InjectRepository } from '@nestjs/typeorm';

@@ -1,26 +1,58 @@
 import { Injectable } from '@nestjs/common';
 import { CreateManufacturerDto } from '../dto/create-manufacturer.dto';
 import { UpdateManufacturerDto } from '../dto/update-manufacturer.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Manufacturer } from '../entities/manufacturer.entity';
+import { Repository } from 'typeorm';
+import { FindManufacturerDto } from '../dto/find-manufacturer.dto';
+import { ConsumablesService } from 'src/consumables/services/consumables.service';
+import { EventsService } from 'src/events/services/events.service';
 
 @Injectable()
 export class ManufacturerService {
-  create(createManufacturerDto: CreateManufacturerDto) {
-    return 'This action adds a new manufacturer';
+  constructor(
+    @InjectRepository(Manufacturer)
+    private readonly manufacturerRepository: Repository<Manufacturer>,
+    private readonly consumableService: ConsumablesService,
+    private readonly eventService: EventsService,
+  ) {}
+
+  create(createConsumableDto: CreateManufacturerDto) {
+    return this.manufacturerRepository.save(createConsumableDto);
   }
 
-  findAll() {
-    return `This action returns all manufacturer`;
+  findAll(query: FindManufacturerDto) {
+    return this.manufacturerRepository.find({ where: query });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} manufacturer`;
+  async getById(id: number) {
+    return this.manufacturerRepository.findOneByOrFail({
+      manufacturerId: id,
+    });
   }
 
-  update(id: number, updateManufacturerDto: UpdateManufacturerDto) {
-    return `This action updates a #${id} manufacturer`;
+  async update(id: number, updateConsumableDto: UpdateManufacturerDto) {
+    const consumable = await this.getById(id);
+    return this.manufacturerRepository.save(
+      this.manufacturerRepository.create({
+        ...consumable,
+        ...updateConsumableDto,
+      }),
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} manufacturer`;
+  async remove(id: number) {
+    const consumable = await this.getById(id);
+    return this.manufacturerRepository.remove(consumable);
+  }
+
+  async addConsumableToEvent(consumableId: number, eventId: number) {
+    const consumable = await this.consumableService.getById(consumableId);
+    await this.eventService.addConsumableToEvent(eventId, consumable);
+  }
+
+  async removeConsumableFromEvent(consumableId: number, eventId: number) {
+    const consumable = await this.consumableService.getById(consumableId);
+    await this.eventService.removeConsumableFromEvent(eventId, consumable);
   }
 }

@@ -91,30 +91,4 @@ export class EventsController {
   ) {
     return this.eventService.removeAttendeeFromEvent(attendeeId, eventId);
   }
-
-  @ApiOperation({ summary: 'Adds consumable to existing event' })
-  @ApiNotFoundResponse({
-    description:
-      'Possible reasons: Event not found; Consumable not found; Atendee is underaged for this event',
-  })
-  @Get(':eventId/:consumableId')
-  async addConsumableToEvent(
-    @Param('consumableId') consumableId: number,
-    @Param('eventId') eventId: number,
-  ) {
-    return this.eventService.addConsumableToEvent(consumableId, eventId);
-  }
-
-  @ApiOperation({ summary: 'Removes consumable from existing event' })
-  @ApiNotFoundResponse({
-    description:
-      'Possible reasons: Event not found; Consumable not found; Atendee was not included in event',
-  })
-  @Delete(':eventId/:consumableId')
-  async removeConsumableFromEvent(
-    @Param('consumableId') consumableId: number,
-    @Param('eventId') eventId: number,
-  ) {
-    return this.eventService.removeConsumableFromEvent(consumableId, eventId);
-  }
 }

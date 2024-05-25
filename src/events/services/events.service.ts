@@ -20,6 +20,7 @@ import { AttendeesService } from 'src/attendees/services/attendees.service';
 import { EventAttendeeService } from './eventAttendees.service';
 import { ConsumablesService } from 'src/consumables/services/consumables.service';
 import { EventConsumableService } from './eventConsumables.service';
+import { Consumable } from 'src/consumables/entities/Consumable.entity';
 
 @Injectable()
 export class EventsService {
@@ -104,15 +105,14 @@ export class EventsService {
     await this.eventAttendeeService.delete(eventId, attendeeId);
   }
 
-  async addConsumableToEvent(consumableId: number, eventId: number) {
-    const consumable = await this.consumableService.getById(consumableId);
+  async addConsumableToEvent(eventId: number, consumable: Consumable) {
     const event = await this.getById(eventId, {
       eventConsumables: { consumableId: true },
     });
     await this.eventConsumableService.create(event, consumable);
   }
 
-  async removeConsumableFromEvent(attendeeId: number, eventId: number) {
-    await this.eventConsumableService.delete(eventId, attendeeId);
+  async removeConsumableFromEvent(eventId: number, consumable: Consumable) {
+    await this.eventConsumableService.delete(eventId, consumable.consumableId);
   }
 }
