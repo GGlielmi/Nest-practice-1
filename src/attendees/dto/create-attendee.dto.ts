@@ -9,5 +9,5 @@ export class CreateAttendeeDto {
 
   @IsOptional()
   @IsNumber()
-  credit: number = 0;
+  funds: number = 0;
 }

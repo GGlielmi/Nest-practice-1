@@ -17,10 +17,8 @@ export class EventAttendee {
   @PrimaryGeneratedColumn()
   public eventAttendeeId: number;
 
-  @Column()
   eventId: number;
 
-  @Column()
   attendeeId: number;
 
   @ManyToOne(() => Event, (event) => event.eventAttendees)

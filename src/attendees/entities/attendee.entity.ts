@@ -14,6 +14,7 @@ export class Attendee {
   age: number;
 
   @Column({
+    type: 'float',
     default: 0,
     transformer: {
       from: (value) => value * DOLAR_COST,
