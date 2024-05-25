@@ -64,7 +64,7 @@ export class EventsService {
     return this.eventRepository.findOne({
       where: { eventId: id },
       select,
-      relations: [...(select?.['attendees'] ? ['attendees'] : [])],
+      relations: [...(select?.['eventAttendees'] ? ['eventAttendees'] : [])],
     });
   }
 
