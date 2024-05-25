@@ -7,17 +7,14 @@ import {
   Param,
   Delete,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ConsumablesService } from '../services/consumables.service';
 import { CreateConsumableDto } from '../dto/create-consumable.dto';
 import { FindConsumableDto } from '../dto/find-consumable.dto';
 import { UpdateConsumableDto } from '../dto/update-consumable.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { EntityNotFoundInterceptor } from 'src/interceptors/entity-not-found/entity-not-found.interceptor';
 
 @ApiTags('Consumables')
-@UseInterceptors(EntityNotFoundInterceptor)
 @Controller('consumables')
 export class ConsumablesController {
   constructor(private readonly consumablesService: ConsumablesService) {}

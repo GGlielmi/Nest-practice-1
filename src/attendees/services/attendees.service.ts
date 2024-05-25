@@ -30,14 +30,8 @@ export class AttendeesService {
     return this.attendeeRepository.findBy(findAttendeeDto);
   }
 
-  private findById(id: number) {
-    return this.attendeeRepository.findOneBy({ attendeeId: id });
-  }
-
   async getById(id: number) {
-    const attendee = await this.findById(id);
-    if (!attendee) throw new NotFoundException();
-    return attendee;
+    return this.attendeeRepository.findOneByOrFail({ attendeeId: id });
   }
 
   async checkExistence(id: number) {

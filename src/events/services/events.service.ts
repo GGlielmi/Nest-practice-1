@@ -64,8 +64,8 @@ export class EventsService {
     return this.eventRepository.save(input);
   }
 
-  private async findById(id: number, select?: FindOptionsSelect<Event>) {
-    return this.eventRepository.findOne({
+  async getById(id: number, select?: FindOptionsSelect<Event>) {
+    return this.eventRepository.findOneOrFail({
       where: { eventId: id },
       select,
       relations: [
@@ -73,12 +73,6 @@ export class EventsService {
         ...(select?.['eventConsumables'] ? ['eventConsumables'] : []),
       ],
     });
-  }
-
-  async getById(id: number, select?: FindOptionsSelect<Event>) {
-    const event = await this.findById(id, select);
-    if (!event) throw new NotFoundException();
-    return event;
   }
 
   async checkExistence(eventId: number) {
