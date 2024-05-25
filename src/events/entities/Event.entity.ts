@@ -7,10 +7,13 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { EventAttendee } from './EventAttendee.entity';
+import { Consumable } from 'src/consumables/entities/Consumable.entity';
 
 @Entity()
 export class Event {
@@ -43,6 +46,12 @@ export class Event {
 
   @Column({ default: 0 })
   minRequiredAge?: number;
+
+  @ManyToMany(() => Consumable, (consumable) => consumable.events, {
+    onDelete: 'CASCADE',
+  })
+  @JoinTable({ name: 'event_consumable' })
+  consumables: Consumable[];
 
   @OneToMany(
     () => EventAttendee,
