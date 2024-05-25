@@ -104,11 +104,15 @@ export class EventsService {
     await this.eventAttendeeService.delete(eventId, attendeeId);
   }
 
-  async addConsumable(consumableId: number, eventId: number) {
+  async addConsumableToEvent(consumableId: number, eventId: number) {
     const consumable = await this.consumableService.getById(consumableId);
     const event = await this.getById(eventId, {
       eventConsumables: { consumableId: true },
     });
     await this.eventConsumableService.create(event, consumable);
+  }
+
+  async removeConsumableFromEvent(attendeeId: number, eventId: number) {
+    await this.eventConsumableService.delete(eventId, attendeeId);
   }
 }
