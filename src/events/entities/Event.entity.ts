@@ -44,7 +44,11 @@ export class Event {
   @Column({ default: 0 })
   minRequiredAge?: number;
 
-  @OneToMany(() => EventAttendee, (eventAttendee) => eventAttendee.event)
+  @OneToMany(
+    () => EventAttendee,
+    (eventAttendee) => eventAttendee.event,
+    // { cascade: true} // this is a typeorm option that enables performing operations on the related entities
+  )
   eventAttendees: EventAttendee[];
 
   validateAttendeeAge(attendee: Attendee) {
