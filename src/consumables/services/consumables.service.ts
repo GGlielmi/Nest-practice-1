@@ -20,16 +20,10 @@ export class ConsumablesService {
     return this.consumableRepository.find({ where: query });
   }
 
-  private async findById(id: number) {
-    return this.consumableRepository.findBy({
+  async getById(id: number) {
+    return this.consumableRepository.findOneByOrFail({
       consumableId: id,
     });
-  }
-
-  async getById(id: number) {
-    const consumable = await this.findById(id);
-    if (!consumable) throw new NotFoundException();
-    return consumable;
   }
 
   async update(id: number, updateConsumableDto: UpdateConsumableDto) {

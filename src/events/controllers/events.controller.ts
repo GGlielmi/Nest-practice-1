@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateEventDto } from '../dtos/CreateEvent.dto';
 import { UpdateEventDto } from '../dtos/UpdateEvent.dto';
@@ -20,9 +21,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetEvent } from '../dtos/GetEvent.dto';
+import { EntityNotFoundInterceptor } from 'src/interceptors/entity-not-found/entity-not-found.interceptor';
 
 @Controller('events')
 @ApiTags('Events')
+@UseInterceptors(EntityNotFoundInterceptor)
 export class EventsController {
   constructor(private readonly eventService: EventsService) {}
 

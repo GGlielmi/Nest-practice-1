@@ -3,9 +3,10 @@ import { ConsumablesService } from './services/consumables.service';
 import { ConsumablesController } from './controllers/consumables.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventConsumable } from './entities/EVentConsumable.entity';
+import { Consumable } from './entities/Consumable.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EventConsumable])],
+  imports: [TypeOrmModule.forFeature([Consumable, EventConsumable])],
   controllers: [ConsumablesController],
   providers: [ConsumablesService],
   exports: [ConsumablesService],

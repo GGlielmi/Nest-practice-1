@@ -7,13 +7,26 @@ import { AttendeesModule } from 'src/attendees/attendees.module';
 import { EventAttendee } from './entities/EventAttendee.entity';
 import { EventAttendeeService } from './services/eventAttendees.service';
 import { Consumable } from 'src/consumables/entities/Consumable.entity';
+import { ConsumablesService } from 'src/consumables/services/consumables.service';
+import { EventConsumableService } from './services/eventConsumables.service';
+import { EventConsumable } from 'src/consumables/entities/EVentConsumable.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Event, EventAttendee, Consumable]),
+    TypeOrmModule.forFeature([
+      Event,
+      EventAttendee,
+      Consumable,
+      EventConsumable,
+    ]),
     AttendeesModule,
   ],
   controllers: [EventsController],
-  providers: [EventsService, EventAttendeeService],
+  providers: [
+    EventsService,
+    EventAttendeeService,
+    ConsumablesService,
+    EventConsumableService,
+  ],
 })
 export class EventsModule {}

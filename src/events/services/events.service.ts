@@ -18,6 +18,8 @@ import { EventFindParams } from '../params/eventFind.dto';
 import { UpdateAttendeeDto } from 'src/attendees/dto/update-attendee.dto';
 import { AttendeesService } from 'src/attendees/services/attendees.service';
 import { EventAttendeeService } from './eventAttendees.service';
+import { ConsumablesService } from 'src/consumables/services/consumables.service';
+import { EventConsumableService } from './eventConsumables.service';
 
 @Injectable()
 export class EventsService {
@@ -26,6 +28,8 @@ export class EventsService {
     private readonly eventRepository: Repository<Event>,
     private readonly attendeeService: AttendeesService,
     private readonly eventAttendeeService: EventAttendeeService,
+    private readonly consumableService: ConsumablesService,
+    private readonly eventConsumableService: EventConsumableService,
   ) {}
 
   find(
@@ -64,7 +68,10 @@ export class EventsService {
     return this.eventRepository.findOne({
       where: { eventId: id },
       select,
-      relations: [...(select?.['eventAttendees'] ? ['eventAttendees'] : [])],
+      relations: [
+        ...(select?.['eventAttendees'] ? ['eventAttendees'] : []),
+        ...(select?.['eventConsumables'] ? ['eventConsumables'] : []),
+      ],
     });
   }
 
@@ -101,5 +108,13 @@ export class EventsService {
 
   async removeAttendeeFromEvent(attendeeId: number, eventId: number) {
     await this.eventAttendeeService.delete(eventId, attendeeId);
+  }
+
+  async addConsumable(consumableId: number, eventId: number) {
+    const consumable = await this.consumableService.getById(consumableId);
+    const event = await this.getById(eventId, {
+      eventConsumables: { consumableId: true },
+    });
+    await this.eventConsumableService.create(event, consumable);
   }
 }
