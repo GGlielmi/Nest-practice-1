@@ -44,4 +44,20 @@ export class ManufacturerController {
   remove(@Param('id') id: string) {
     return this.manufacturerService.remove(+id);
   }
+
+  @Get(':consumableId/:eventId')
+  async addConsumableToEvent(
+    @Param('consumableId') consumableId: number,
+    @Param('eventId') eventId: number,
+  ) {
+    return this.manufacturerService.addConsumableToEvent(consumableId, eventId);
+  }
+
+  @Get(':consumableId/:eventId')
+  async removeConsumableFromEvent(consumableId: number, eventId: number) {
+    return this.manufacturerService.removeConsumableFromEvent(
+      consumableId,
+      eventId,
+    );
+  }
 }
