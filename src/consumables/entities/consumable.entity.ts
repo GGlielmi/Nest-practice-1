@@ -9,7 +9,7 @@ import { EventConsumable } from '../../events/entities/EventConsumable.entity';
 import { Manufacturer } from 'src/manufacturer/entities/manufacturer.entity';
 
 export enum ConsumableType {
-  DRINK = 'dring',
+  DRINK = 'drink',
   FOOD = 'food',
   SOUVENIR = 'souvenir',
 }
@@ -18,6 +18,9 @@ export enum ConsumableType {
 export class Consumable {
   @PrimaryGeneratedColumn() // with autoincrement
   consumableId: number;
+
+  @Column({ unique: true })
+  brand: string;
 
   @Column({ enum: ConsumableType })
   type: ConsumableType;
