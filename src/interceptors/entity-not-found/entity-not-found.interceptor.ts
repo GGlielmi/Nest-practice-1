@@ -5,7 +5,7 @@ import {
   NestInterceptor,
   NotFoundException,
 } from '@nestjs/common';
-import { Observable, catchError, tap, throwError } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 import { EntityNotFoundError } from 'typeorm';
 
 @Injectable()

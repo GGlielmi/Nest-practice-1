@@ -71,7 +71,7 @@ export class EventsController {
     description:
       'Possible reasons: Event not found; Attendee not found; Atendee is underaged for this event',
   })
-  @Get(':eventId/:attendeeId')
+  @Get(':eventId/attendees/:attendeeId')
   async addAttendeeToEvent(
     @Param('attendeeId') attendeeId: number,
     @Param('eventId') eventId: number,
@@ -84,11 +84,16 @@ export class EventsController {
     description:
       'Possible reasons: Event not found; Attendee not found; Atendee was not included in event',
   })
-  @Delete(':eventId/:attendeeId')
+  @Delete(':eventId/attendees/:attendeeId')
   async removeAttendeeFromEvent(
     @Param('attendeeId') attendeeId: number,
     @Param('eventId') eventId: number,
   ) {
     return this.eventService.removeAttendeeFromEvent(attendeeId, eventId);
+  }
+
+  @Get(':eventId/consumables/:consumableId')
+  async removeConsumableFromEvent(eventId: number, consumableId: number) {
+    return this.eventService.removeConsumableFromEvent(eventId, consumableId);
   }
 }

@@ -112,7 +112,21 @@ export class EventsService {
     await this.eventConsumableService.create(event, consumable);
   }
 
-  async removeConsumableFromEvent(eventId: number, consumable: Consumable) {
-    await this.eventConsumableService.delete(eventId, consumable.consumableId);
+  removeConsumableFromEvent(
+    eventId: number,
+    consumable: Consumable,
+  ): Promise<void>;
+  removeConsumableFromEvent(
+    eventId: number,
+    consumableId: number,
+  ): Promise<void>;
+
+  async removeConsumableFromEvent(eventId: unknown, consumable: unknown) {
+    await this.eventConsumableService.delete(
+      eventId as number,
+      consumable instanceof Consumable
+        ? consumable.consumableId
+        : (consumable as number),
+    );
   }
 }

@@ -9,7 +9,7 @@ import { EventAttendeeService } from './services/eventAttendees.service';
 import { Consumable } from 'src/consumables/entities/Consumable.entity';
 import { ConsumablesService } from 'src/consumables/services/consumables.service';
 import { EventConsumableService } from './services/eventConsumables.service';
-import { EventConsumable } from 'src/consumables/entities/EVentConsumable.entity';
+import { EventConsumable } from './entities/EventConsumable.entity';
 
 @Module({
   imports: [

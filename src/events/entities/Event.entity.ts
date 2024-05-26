@@ -11,7 +11,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { EventAttendee } from './EventAttendee.entity';
-import { EventConsumable } from 'src/consumables/entities/EVentConsumable.entity';
+import { EventConsumable } from '../entities/EventConsumable.entity';
 
 @Entity()
 export class Event {
@@ -65,7 +65,7 @@ export class Event {
 
   finishDate: Date;
   @AfterLoad()
-  setFinishTime() {
+  setFinishDate() {
     const [hours, minutes, seconds] = this.duration.split(':');
     const finishDate = new Date(this.when);
     finishDate.setHours(finishDate.getHours() + +hours);

@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { EventConsumable } from './EVentConsumable.entity';
+import { EventConsumable } from '../../events/entities/EventConsumable.entity';
 import { Manufacturer } from 'src/manufacturer/entities/manufacturer.entity';
 
 export enum ConsumableType {

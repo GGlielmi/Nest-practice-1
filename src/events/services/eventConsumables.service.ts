@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Event } from '../entities/Event.entity';
-import { EventConsumable } from 'src/consumables/entities/EVentConsumable.entity';
+import { EventConsumable } from '../entities/EventConsumable.entity';
 import { Consumable } from 'src/consumables/entities/Consumable.entity';
 
 @Injectable()
