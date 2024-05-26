@@ -24,10 +24,12 @@ export class EventsService {
     eventFindParams: EventFindParams, // a class is needed to use more functionality besides typing, like validation
     relations: FindOptionsRelations<Event> = {},
   ) {
-    return this.eventRepository.find({
+    return this.eventRepository.findAndCount({
       where: eventFindParams.getWhereParams(),
       order: eventFindParams.getOrderParam(),
       relations,
+      take: eventFindParams.limit,
+      skip: eventFindParams.offset,
     });
   }
 

@@ -2,46 +2,45 @@ import { orderDirection } from 'src/constants/db';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsIn, IsNumber, IsOptional, Max, Min } from 'class-validator';
 import { CreateEventDto } from '../dtos/CreateEvent.dto';
-import { Between, ILike, In } from 'typeorm';
+import { Between, FindOptionsWhere, ILike, In } from 'typeorm';
 import { Event } from '../entities/Event.entity';
 import { IFindParams } from 'src/interfaces/IFindParams';
 
 const eventDtoKeys = Object.keys(new CreateEventDto());
+
 const getTimeThousandYearsFromNow = () =>
   new Date().getTime() + 1000 * 60 * 60 * 24 * 365.25 * 1000;
 
-class _BaseEventFindParams
-  extends CreateEventDto
+export class EventFindParams
+  extends PartialType(CreateEventDto)
   implements IFindParams<Event>
 {
-  getWhereParams() {
-    return {
-      ...this,
-      ...(this.description && {
-        description: ILike(`%${this.description}%`),
-      }),
-    };
-  }
+  @IsOptional()
+  @IsNumber()
+  limit: number = 10;
 
-  getOrderParam() {
-    return {};
-  }
-}
+  @IsOptional()
+  @IsNumber()
+  offset: number = 0;
 
-class _EventFindParams extends _BaseEventFindParams {
+  @IsOptional()
   @IsNumber({}, { each: true })
   eventIds?: number[];
 
+  @IsOptional()
   @ApiProperty({ type: String, required: false })
   whenFrom?: Date;
 
+  @IsOptional()
   @ApiProperty({ type: String, required: false })
   whenTo?: Date;
 
+  @IsOptional()
   @Min(0)
   @Max(1_000_000)
   minCost?: number;
 
+  @IsOptional()
   @Min(0)
   @Max(1_000_000)
   maxCost?: number;
@@ -65,9 +64,16 @@ class _EventFindParams extends _BaseEventFindParams {
   @IsIn(orderDirection)
   orderDirection?: TOrderDirection = 'asc';
 
-  getWhereParams() {
+  getWhereParams(): FindOptionsWhere<Event> {
     return {
-      ...super.getWhereParams(),
+      ...(this.address && { address: this.address }),
+      ...(this.cost && { cost: this.cost }),
+      ...(this.name && { name: this.name }),
+      ...(this.when && { when: this.when }),
+      ...(this.minRequiredAge && { minRequiredAge: this.minRequiredAge }),
+      ...(this.description && {
+        description: ILike(`%${this.description}%`),
+      }),
       ...(this.eventIds && { eventId: In(this.eventIds) }),
       ...((this.whenFrom || this.whenTo) && {
         when: Between(
@@ -85,5 +91,3 @@ class _EventFindParams extends _BaseEventFindParams {
     return this.orderBy ? { [this.orderBy]: this.orderDirection } : {};
   }
 }
-
-export class EventFindParams extends PartialType(_EventFindParams) {}
