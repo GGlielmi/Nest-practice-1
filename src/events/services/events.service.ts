@@ -1,24 +1,12 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEventDto } from '../dtos/CreateEvent.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Between,
-  FindOptionsRelations,
-  FindOptionsSelect,
-  ILike,
-  In,
-  Repository,
-} from 'typeorm';
+import { FindOptionsRelations, FindOptionsSelect, Repository } from 'typeorm';
 import { Event } from '../entities/Event.entity';
 import { EventFindParams } from '../params/eventFind.dto';
 import { UpdateAttendeeDto } from 'src/attendees/dto/update-attendee.dto';
 import { AttendeesService } from 'src/attendees/services/attendees.service';
 import { EventAttendeeService } from './eventAttendees.service';
-import { ConsumablesService } from 'src/consumables/services/consumables.service';
 import { EventConsumableService } from './eventConsumables.service';
 import { Consumable } from 'src/consumables/entities/Consumable.entity';
 
@@ -29,35 +17,17 @@ export class EventsService {
     private readonly eventRepository: Repository<Event>,
     private readonly attendeeService: AttendeesService,
     private readonly eventAttendeeService: EventAttendeeService,
-    private readonly consumableService: ConsumablesService,
     private readonly eventConsumableService: EventConsumableService,
   ) {}
 
   find(
-    {
-      orderBy,
-      orderDirection = 'asc',
-      whenTo,
-      whenFrom,
-      minCost,
-      maxCost,
-      ...entityProps
-    }: EventFindParams, // a class is needed to use more functionality besides typing, like validation
-    relations?: FindOptionsRelations<Event>,
+    eventFindParams: EventFindParams, // a class is needed to use more functionality besides typing, like validation
+    relations: FindOptionsRelations<Event> = {},
   ) {
     return this.eventRepository.find({
-      where: {
-        ...entityProps,
-        eventId:
-          entityProps.id instanceof Array ? In(entityProps.id) : entityProps.id,
-        ...(entityProps.description && {
-          description: ILike(`%${entityProps.description}%`),
-        }),
-        when: whenFrom || whenTo ? Between(whenFrom, whenTo) : entityProps.when,
-        cost: minCost || maxCost ? Between(minCost, maxCost) : entityProps.cost,
-      },
-      ...(orderBy && { order: { [orderBy]: orderDirection } }),
-      ...(relations && { relations }),
+      where: eventFindParams.getWhereParams(),
+      order: eventFindParams.getOrderParam(),
+      relations,
     });
   }
 

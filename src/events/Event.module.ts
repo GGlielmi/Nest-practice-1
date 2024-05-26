@@ -7,7 +7,6 @@ import { AttendeesModule } from 'src/attendees/attendees.module';
 import { EventAttendee } from './entities/EventAttendee.entity';
 import { EventAttendeeService } from './services/eventAttendees.service';
 import { Consumable } from 'src/consumables/entities/Consumable.entity';
-import { ConsumablesService } from 'src/consumables/services/consumables.service';
 import { EventConsumableService } from './services/eventConsumables.service';
 import { EventConsumable } from './entities/EventConsumable.entity';
 
@@ -22,12 +21,7 @@ import { EventConsumable } from './entities/EventConsumable.entity';
     AttendeesModule,
   ],
   controllers: [EventsController],
-  providers: [
-    EventsService,
-    EventAttendeeService,
-    ConsumablesService,
-    EventConsumableService,
-  ],
+  providers: [EventsService, EventAttendeeService, EventConsumableService],
   exports: [EventsService],
 })
 export class EventsModule {}

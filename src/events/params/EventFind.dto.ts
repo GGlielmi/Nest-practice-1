@@ -1,31 +1,50 @@
 import { orderDirection } from 'src/constants/db';
-import { CreateEventDto } from '../dtos/CreateEvent.dto';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsIn, IsOptional, Max, Min } from 'class-validator';
+import { IsIn, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { CreateEventDto } from '../dtos/CreateEvent.dto';
+import { Between, ILike, In } from 'typeorm';
+import { Event } from '../entities/Event.entity';
+import { IFindParams } from 'src/interfaces/IFindParams';
 
 const eventDtoKeys = Object.keys(new CreateEventDto());
-
 const getTimeThousandYearsFromNow = () =>
   new Date().getTime() + 1000 * 60 * 60 * 24 * 365.25 * 1000;
 
-export class EventFindParams extends PartialType(
-  class Asd extends CreateEventDto {
-    id?: number | number[];
-  },
-) {
-  @ApiProperty({ type: String, required: false })
-  whenFrom?: Date = new Date(0);
+class _BaseEventFindParams
+  extends CreateEventDto
+  implements IFindParams<Event>
+{
+  getWhereParams() {
+    return {
+      ...this,
+      ...(this.description && {
+        description: ILike(`%${this.description}%`),
+      }),
+    };
+  }
+
+  getOrderParam() {
+    return {};
+  }
+}
+
+class _EventFindParams extends _BaseEventFindParams {
+  @IsNumber({}, { each: true })
+  eventIds?: number[];
 
   @ApiProperty({ type: String, required: false })
-  whenTo?: Date = new Date(getTimeThousandYearsFromNow());
+  whenFrom?: Date;
+
+  @ApiProperty({ type: String, required: false })
+  whenTo?: Date;
 
   @Min(0)
   @Max(1_000_000)
-  maxCost?: number = 1_000_000;
+  minCost?: number;
 
   @Min(0)
   @Max(1_000_000)
-  minCost?: number = 0;
+  maxCost?: number;
 
   @IsOptional()
   @ApiProperty({
@@ -44,5 +63,27 @@ export class EventFindParams extends PartialType(
   })
   @IsOptional()
   @IsIn(orderDirection)
-  orderDirection?: TOrderDirection;
+  orderDirection?: TOrderDirection = 'asc';
+
+  getWhereParams() {
+    return {
+      ...super.getWhereParams(),
+      ...(this.eventIds && { eventId: In(this.eventIds) }),
+      ...((this.whenFrom || this.whenTo) && {
+        when: Between(
+          this.whenFrom || new Date(0),
+          this.whenTo || new Date(getTimeThousandYearsFromNow()),
+        ),
+      }),
+      ...((this.minCost || this.maxCost) && {
+        cost: Between(this.minCost, this.maxCost),
+      }),
+    };
+  }
+
+  getOrderParam() {
+    return this.orderBy ? { [this.orderBy]: this.orderDirection } : {};
+  }
 }
+
+export class EventFindParams extends PartialType(_EventFindParams) {}
