@@ -15,4 +15,10 @@ export class LoginError {
 
   @Column('varchar', { array: true })
   credentials: [username: string, password: string];
+
+  @Column()
+  userAgent: string;
+
+  @Column()
+  ipAddress: string;
 }

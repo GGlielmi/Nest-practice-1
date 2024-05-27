@@ -13,4 +13,12 @@ export class CreateLoginErrorDto {
   @ArrayMinSize(2)
   @ArrayMaxSize(2)
   credentials: [username: string, password: string];
+
+  @IsString()
+  @IsNotEmpty()
+  userAgent: string;
+
+  @IsString()
+  @IsNotEmpty()
+  ipAddress: string;
 }
