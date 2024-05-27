@@ -28,8 +28,8 @@ export class EventsService {
       where: eventFindParams.getWhereParams(),
       order: eventFindParams.getOrderParam(),
       relations,
-      take: eventFindParams.limit,
-      skip: eventFindParams.offset,
+      ...(eventFindParams.take && { take: eventFindParams.take }),
+      ...(eventFindParams.skip && { skip: eventFindParams.skip }),
     });
   }
 

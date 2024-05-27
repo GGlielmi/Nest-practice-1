@@ -1,8 +1,5 @@
-import { FindOptionsOrder, FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere } from 'typeorm';
 
-export interface IFindParams<Entity> {
-  limit: number;
-  offset: number;
+export interface IWhereParams<Entity> {
   getWhereParams(): FindOptionsWhere<Entity>;
-  getOrderParam(): FindOptionsOrder<Entity>;
 }

@@ -2,27 +2,27 @@ import { orderDirection } from 'src/constants/db';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsIn, IsNumber, IsOptional, Max, Min } from 'class-validator';
 import { CreateEventDto } from '../dtos/CreateEvent.dto';
-import { Between, FindOptionsWhere, ILike, In } from 'typeorm';
+import {
+  Between,
+  FindOptionsOrder,
+  FindOptionsWhere,
+  ILike,
+  In,
+} from 'typeorm';
 import { Event } from '../entities/Event.entity';
-import { IFindParams } from 'src/interfaces/IFindParams';
+import { IWhereParams } from 'src/interfaces/IFindParams';
+import { WithOrder } from 'src/mixins/WithOrder.mixin';
+import { WithPagination } from 'src/mixins/WithPagination.mixin';
 
 const eventDtoKeys = Object.keys(new CreateEventDto());
 
 const getTimeThousandYearsFromNow = () =>
   new Date().getTime() + 1000 * 60 * 60 * 24 * 365.25 * 1000;
 
-export class EventFindParams
+class _EventFindParams
   extends PartialType(CreateEventDto)
-  implements IFindParams<Event>
+  implements IWhereParams<Event>
 {
-  @IsOptional()
-  @IsNumber()
-  limit: number = 10;
-
-  @IsOptional()
-  @IsNumber()
-  offset: number = 0;
-
   @IsOptional()
   @IsNumber({}, { each: true })
   eventIds?: number[];
@@ -56,7 +56,6 @@ export class EventFindParams
 
   @ApiProperty({
     type: String,
-    required: true,
     enum: orderDirection,
     default: orderDirection[0],
   })
@@ -87,7 +86,12 @@ export class EventFindParams
     };
   }
 
-  getOrderParam() {
+  getOrderParam(): FindOptionsOrder<Event> {
     return this.orderBy ? { [this.orderBy]: this.orderDirection } : {};
   }
 }
+
+export class EventFindParams extends WithOrder(
+  WithPagination(_EventFindParams, 2, 2),
+  eventDtoKeys,
+) {}
