@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Event } from '../entities/Event.entity';
 import { EventConsumable } from '../entities/EventConsumable.entity';
-import { Consumable } from 'src/consumables/entities/Consumable.entity';
+import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
 
 @Injectable()
 export class EventConsumableService {

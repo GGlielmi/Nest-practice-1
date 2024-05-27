@@ -8,7 +8,7 @@ import { UpdateAttendeeDto } from 'src/attendees/dto/update-attendee.dto';
 import { AttendeesService } from 'src/attendees/services/attendees.service';
 import { EventAttendeeService } from './eventAttendees.service';
 import { EventConsumableService } from './eventConsumables.service';
-import { Consumable } from 'src/consumables/entities/Consumable.entity';
+import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
 
 @Injectable()
 export class EventsService {
@@ -68,8 +68,6 @@ export class EventsService {
     const attendee = await this.attendeeService.getById(attendeeId);
     this.eventRepository.manager.transaction(async (manager) => {
       await this.eventAttendeeService.create(event, attendee, manager);
-      attendee.funds -= event.cost;
-      await manager.save(attendee);
     });
   }
 

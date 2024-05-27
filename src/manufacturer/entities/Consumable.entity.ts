@@ -1,12 +1,13 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { EventConsumable } from '../../events/entities/EventConsumable.entity';
-import { Manufacturer } from 'src/manufacturer/entities/manufacturer.entity';
+import { Manufacturer } from 'src/manufacturer/entities/Manufacturer.entity';
 
 export enum ConsumableType {
   DRINK = 'drink',
@@ -28,7 +29,14 @@ export class Consumable {
   @Column({ default: 0 })
   cost: number;
 
-  @ManyToOne(() => Manufacturer, (manufacturer) => manufacturer.consumables)
+  @Column()
+  manufacturerId: number;
+
+  @ManyToOne(() => Manufacturer, (manufacturer) => manufacturer.consumables, {
+    nullable: false,
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'manufacturerId' })
   manufacturer: Manufacturer;
 
   @OneToMany(

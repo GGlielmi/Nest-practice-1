@@ -44,8 +44,8 @@ export class EventAttendee {
   @BeforeUpdate()
   @BeforeInsert()
   checkIfAttendeeIsAgeApropriate() {
-    if (this.event.minRequiredAge > this.attendee.age) {
-      throw new BadRequestException(responseMessages.events.attendeeUnderaged);
-    }
+    // if (this.event.minRequiredAge > this.attendee.age) {
+    //   throw new BadRequestException(responseMessages.events.attendeeUnderaged);
+    // }
   }
 }

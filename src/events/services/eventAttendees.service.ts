@@ -26,7 +26,7 @@ export class EventAttendeeService {
   }
 
   async create(event: Event, attendee: Attendee, manager?: EntityManager) {
-    return manager.save(
+    await manager.save(
       this.eventAttendeesRepository.create({
         event,
         attendee,
@@ -34,6 +34,8 @@ export class EventAttendeeService {
         attendeeId: attendee.attendeeId,
       }),
     );
+    attendee.funds -= event.cost;
+    await manager.save(attendee);
   }
 
   async delete(eventId: number, attendeeId: number) {

@@ -1,18 +1,15 @@
 import { Module } from '@nestjs/common';
-import { ManufacturerService } from './services/manufacturer.service';
+import { ManufacturersService } from './services/manufacturer.service';
 import { ManufacturerController } from './controllers/manufacturer.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Manufacturer } from './entities/manufacturer.entity';
+import { Manufacturer } from './entities/Manufacturer.entity';
 import { EventsModule } from 'src/events/Event.module';
-import { ConsumablesModule } from 'src/consumables/consumables.module';
+import { ConsumablesService } from './services/consumables.service';
+import { Consumable } from './entities/Consumable.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Manufacturer]),
-    EventsModule,
-    ConsumablesModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Manufacturer, Consumable]), EventsModule],
   controllers: [ManufacturerController],
-  providers: [ManufacturerService],
+  providers: [ManufacturersService, ConsumablesService],
 })
 export class ManufacturerModule {}

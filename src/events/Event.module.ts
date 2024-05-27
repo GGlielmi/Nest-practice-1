@@ -6,7 +6,7 @@ import { EventsService } from './services/events.service';
 import { AttendeesModule } from 'src/attendees/attendees.module';
 import { EventAttendee } from './entities/EventAttendee.entity';
 import { EventAttendeeService } from './services/eventAttendees.service';
-import { Consumable } from 'src/consumables/entities/Consumable.entity';
+import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
 import { EventConsumableService } from './services/eventConsumables.service';
 import { EventConsumable } from './entities/EventConsumable.entity';
 

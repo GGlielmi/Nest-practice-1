@@ -1,5 +1,11 @@
-import { Consumable } from 'src/consumables/entities/Consumable.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Manufacturer {
@@ -9,6 +15,8 @@ export class Manufacturer {
   @Column()
   name: string;
 
-  @OneToMany(() => Consumable, (consumable) => consumable.manufacturer)
+  @OneToMany(() => Consumable, (consumable) => consumable.manufacturer, {
+    onDelete: 'CASCADE',
+  })
   consumables: Consumable[];
 }

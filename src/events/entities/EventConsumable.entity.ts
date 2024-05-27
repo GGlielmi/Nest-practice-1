@@ -6,7 +6,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Event } from 'src/events/entities/Event.entity';
-import { Consumable } from '../../consumables/entities/Consumable.entity';
+import { Consumable } from '../../manufacturer/entities/Consumable.entity';
 
 @Entity()
 export class EventConsumable {
