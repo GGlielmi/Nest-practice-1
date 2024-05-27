@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateConsumableDto } from './create-consumable.dto';
+import { BaseConsumableDto } from './base-consumable.dto';
 
-export class UpdateConsumableDto extends PartialType(CreateConsumableDto) {}
+export class UpdateConsumableDto extends PartialType(BaseConsumableDto) {}

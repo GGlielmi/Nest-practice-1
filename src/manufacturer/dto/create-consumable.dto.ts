@@ -1,19 +1,7 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
-import { ConsumableType } from '../../manufacturer/entities/Consumable.entity';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
+import { BaseConsumableDto } from './base-consumable.dto';
 
-export class CreateConsumableDto {
+export class CreateConsumableDto extends BaseConsumableDto {
   @IsNumber()
   manufacturerId: number;
-
-  @IsString()
-  @IsNotEmpty()
-  brand: string;
-
-  @IsEnum(ConsumableType)
-  @ApiProperty({ enum: ConsumableType })
-  type: ConsumableType;
-
-  @Min(0)
-  cost: number;
 }

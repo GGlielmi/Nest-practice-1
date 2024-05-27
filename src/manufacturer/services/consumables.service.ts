@@ -3,7 +3,7 @@ import { CreateConsumableDto } from '../dto/create-consumable.dto';
 import { UpdateConsumableDto } from '../dto/update-consumable.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Consumable } from '../entities/Consumable.entity';
-import { QueryFailedError, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { FindConsumableDto } from '../dto/find-consumable.dto';
 
 @Injectable()

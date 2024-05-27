@@ -46,22 +46,6 @@ export class ManufacturersService {
     return this.manufacturerRepository.remove(consumable);
   }
 
-  addConsumable(consumableId: number, manufacturerId: number) {
-    return this.manufacturerRepository
-      .createQueryBuilder()
-      .relation(Manufacturer, 'consumables')
-      .of(manufacturerId)
-      .add(consumableId);
-  }
-
-  removeConsumable(consumableId: number, manufacturerId: number) {
-    return this.manufacturerRepository
-      .createQueryBuilder()
-      .relation(Manufacturer, 'consumables')
-      .of(manufacturerId)
-      .add(consumableId);
-  }
-
   async addConsumableToEvent(consumableId: number, eventId: number) {
     const consumable = await this.consumableService.getById(consumableId);
     await this.eventService.addConsumableToEvent(eventId, consumable);
