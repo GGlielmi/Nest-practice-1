@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateEventDto } from '../dtos/CreateEvent.dto';
 import { UpdateEventDto } from '../dtos/UpdateEvent.dto';
@@ -20,12 +21,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetEvent } from '../dtos/GetEvent.dto';
+import { PaginationResultInterceptor } from 'src/interceptors/pagination-result/pagination-result.interceptor';
 
 @Controller('events')
 @ApiTags('Events')
 export class EventsController {
   constructor(private readonly eventService: EventsService) {}
 
+  @UseInterceptors(PaginationResultInterceptor)
   @ApiOperation({ summary: 'Search events through query parameters' })
   @Get()
   find(

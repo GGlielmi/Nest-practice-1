@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsNumber, Min, Max } from 'class-validator';
 
-interface IPagination {
+export interface RequestPagination {
   perPage: number;
-  fromPage: number;
+  pageNumber: number;
+}
+
+interface IPagination extends RequestPagination {
   take: number;
   skip: number;
   limit: number;
@@ -27,14 +30,14 @@ export function WithPagination<T extends new (...args: any[]) => any>(
     @IsNumber()
     @Min(1)
     @ApiProperty({ required: false, default: fromPageDefault })
-    fromPage: number = fromPageDefault;
+    pageNumber: number = fromPageDefault;
 
     get take() {
       return this.perPage;
     }
 
     get skip() {
-      return (this.perPage - 1) * this.fromPage;
+      return (this.perPage - 1) * this.pageNumber;
     }
 
     get limit() {
