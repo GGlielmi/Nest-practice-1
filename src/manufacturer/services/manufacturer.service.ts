@@ -42,8 +42,8 @@ export class ManufacturersService {
   }
 
   async remove(id: number) {
-    const consumable = await this.getById(id);
-    return this.manufacturerRepository.remove(consumable);
+    const manufacturer = await this.getById(id);
+    return this.manufacturerRepository.remove(manufacturer);
   }
 
   async addConsumableToEvent(consumableId: number, eventId: number) {
