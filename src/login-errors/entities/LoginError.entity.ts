@@ -1,13 +1,18 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class LoginError {
   @PrimaryGeneratedColumn()
   loginErrorId: number;
 
-  @Column()
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column('varchar', { array: true, length: 2 })
+  @Column('varchar', { array: true })
   credentials: [username: string, password: string];
 }
