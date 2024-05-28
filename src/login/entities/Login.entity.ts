@@ -6,9 +6,9 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class LoginError {
+export class Login {
   @PrimaryGeneratedColumn()
-  loginErrorId: number;
+  loginId: number;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -21,4 +21,7 @@ export class LoginError {
 
   @Column()
   ipAddress: string;
+
+  @Column({ type: 'bool' })
+  failed: boolean;
 }

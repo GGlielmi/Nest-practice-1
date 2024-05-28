@@ -5,7 +5,7 @@ import {
   IStrategyOptionsWithRequest,
   VerifyFunctionWithRequest,
 } from 'passport-local';
-import { LoginErrorsService } from 'src/login-errors/services/login-errors.service';
+import { LoginService } from 'src/login/services/login.service';
 import { UserService } from 'src/user/services/user.service';
 import { IncomingMessage } from 'http';
 import * as bcrypt from 'bcrypt';
@@ -29,7 +29,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   constructor(
     private readonly userService: UserService,
-    private readonly loginErrorService: LoginErrorsService,
+    private readonly loginService: LoginService,
   ) {
     super({
       ...credentialsStructure,
@@ -47,25 +47,27 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     _verified: VerifyFunctionWithRequest, // the same as this validate method (verify is used in plain js)
   ) {
     const user = await this.userService.getByUsername(username);
-    const passwordsMatched = await bcrypt.compare(pass, user.password);
-    if (!user || passwordsMatched) {
+    const passwordsMatched = await bcrypt.compare(pass, user?.password || '');
+    const errd = !user || !passwordsMatched;
+    if (errd) {
       this.logger.warn(
         !user
           ? `User '${username}' doesn't exist`
           : `Invalid credentials for user '${username}'`,
         'AUTHENTICATION FAIL',
       );
-      this.loginErrorService
-        .create({
-          credentials: [username, pass],
-          userAgent: req.headers['user-agent'],
-          ipAddress:
-            req.headers['x-forwarded-for']?.toString() ||
-            req.socket.remoteAddress,
-        })
-        .catch(console.log);
       throw new UnauthorizedException();
     }
+    this.loginService
+      .create({
+        credentials: [username, pass],
+        userAgent: req.headers['user-agent'],
+        ipAddress:
+          req.headers['x-forwarded-for']?.toString() ||
+          req.socket.remoteAddress,
+        failed: errd,
+      })
+      .catch(console.log);
     return user; // this is added to `.user` prop of the request
   }
 }

@@ -9,7 +9,7 @@ import { ManufacturerModule } from './manufacturer/manufacturer.module';
 import config from 'src/config/configuration';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { LoginErrorsModule } from './login-errors/login-errors.module';
+import { LoginModule } from './login/login.module';
 
 @Module({
   imports: [
@@ -35,9 +35,8 @@ import { LoginErrorsModule } from './login-errors/login-errors.module';
     AttendeesModule,
     ManufacturerModule,
     UserModule,
-    LoginErrorsModule,
+    LoginModule,
   ],
-  controllers: [],
   providers: [AppService],
 })
 export class AppModule {}
