@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -8,6 +9,7 @@ import {
 } from 'typeorm';
 import { EventConsumable } from '../../events/entities/EventConsumable.entity';
 import { Manufacturer } from 'src/manufacturer/entities/Manufacturer.entity';
+import { CONSUMABLE_BRAND_INDEX } from 'src/constants/uniqueIndexes';
 
 export enum ConsumableType {
   DRINK = 'drink',
@@ -20,7 +22,8 @@ export class Consumable {
   @PrimaryGeneratedColumn() // with autoincrement
   consumableId: number;
 
-  @Column({ unique: true })
+  @Index(CONSUMABLE_BRAND_INDEX.constraint, { unique: true })
+  @Column()
   brand: string;
 
   @Column({ enum: ConsumableType })

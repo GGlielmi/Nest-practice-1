@@ -13,7 +13,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     return this.userRepository.save(createUserDto);
   }
 
