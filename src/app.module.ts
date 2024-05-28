@@ -14,6 +14,7 @@ import { LoginErrorsModule } from './login-errors/login-errors.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       load: [configuration],
       expandVariables: true,
     }),

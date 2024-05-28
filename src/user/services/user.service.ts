@@ -22,15 +22,11 @@ export class UserService {
   }
 
   async getByUsername(username: string) {
-    return this.userRepository.findOneByOrFail({
-      username,
-    });
+    return this.userRepository.findOneBy({ username });
   }
 
   async getById(id: number) {
-    return this.userRepository.findOneByOrFail({
-      userId: id,
-    });
+    return this.userRepository.findOneByOrFail({ userId: id });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
