@@ -1,13 +1,14 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-local';
 import {
+  Strategy,
   IStrategyOptionsWithRequest,
   VerifyFunctionWithRequest,
 } from 'passport-local';
 import { LoginErrorsService } from 'src/login-errors/services/login-errors.service';
 import { UserService } from 'src/user/services/user.service';
 import { IncomingMessage } from 'http';
+import * as bcrypt from 'bcrypt';
 
 const credentialsStructure = {
   usernameField: 'user',
@@ -46,7 +47,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     _verified: VerifyFunctionWithRequest, // the same as this validate method (verify is used in plain js)
   ) {
     const user = await this.userService.getByUsername(username);
-    if (!user || pass !== user.password) {
+    const passwordsMatched = await bcrypt.compare(pass, user.password);
+    if (!user || passwordsMatched) {
       this.logger.warn(
         !user
           ? `User '${username}' doesn't exist`

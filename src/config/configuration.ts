@@ -9,5 +9,8 @@ export default registerAs('config', () => ({
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DATABASE,
   },
-  jwtSecret: process.env.JWT_SECRET,
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    salt: process.env.JWT_SALT,
+  },
 }));
