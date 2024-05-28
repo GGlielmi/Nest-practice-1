@@ -7,16 +7,29 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { EventAttendee } from './EventAttendee.entity';
 import { EventConsumable } from '../entities/EventConsumable.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 export class Event {
   @PrimaryGeneratedColumn() // with autoincrement
   eventId: number;
+
+  @Column()
+  organizerId: number;
+
+  @ManyToOne(() => User, (user) => user.events, {
+    nullable: false,
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'organizerId' })
+  organizer: User;
 
   @Column()
   name: string;

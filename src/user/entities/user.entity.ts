@@ -1,5 +1,12 @@
 import { USERNAME_INDEX, USER_EMAIL_INDEX } from 'src/constants/uniqueIndexes';
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Event } from 'src/events/entities/Event.entity';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -22,4 +29,9 @@ export class User {
 
   @Column()
   lastName: string;
+
+  @OneToMany(() => Event, (event) => event.organizer, {
+    onDelete: 'CASCADE',
+  })
+  events: Event[];
 }
