@@ -21,7 +21,7 @@ type TCredentials = {
   [K in (typeof credentialsStructure)[keyof typeof credentialsStructure]]: string;
 };
 
-export const credentialsKeys: TCredentials = Object.values(
+export const credentialsKeysSchema: TCredentials = Object.values(
   credentialsStructure,
 ).reduce((p, c) => ({ ...p, [c]: 'string' }), {} as any);
 
@@ -56,15 +56,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       .getOne();
     const passwordsMatched = await bcrypt.compare(pass, user?.password || '');
     const errd = !user || !passwordsMatched;
-    if (errd) {
-      this.logger.warn(
-        !user
-          ? `User '${username}' doesn't exist`
-          : `Invalid credentials for user '${username}'`,
-        'AUTHENTICATION FAIL',
-      );
-      throw new UnauthorizedException();
-    }
     this.loginService
       .create({
         credentials: [username, pass],
@@ -75,6 +66,15 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         failed: errd,
       })
       .catch(console.log);
+    if (errd) {
+      this.logger.warn(
+        !user
+          ? `User '${username}' doesn't exist`
+          : `Invalid credentials for user '${username}'`,
+        'AUTHENTICATION FAIL',
+      );
+      throw new UnauthorizedException();
+    }
     return user; // this is added to `.user` prop of the request
   }
 }
