@@ -6,9 +6,11 @@ import {
   VerifyFunctionWithRequest,
 } from 'passport-local';
 import { LoginService } from 'src/login/services/login.service';
-import { UserService } from 'src/user/services/user.service';
 import { IncomingMessage } from 'http';
 import * as bcrypt from 'bcrypt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from 'src/user/entities/user.entity';
 
 const credentialsStructure = {
   usernameField: 'user',
@@ -28,7 +30,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   private readonly logger = new Logger(LocalStrategy.name);
 
   constructor(
-    private readonly userService: UserService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>, // service not used to add security for retrieving passwords
     private readonly loginService: LoginService,
   ) {
     super({
@@ -46,7 +49,11 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     pass: string,
     _verified: VerifyFunctionWithRequest, // the same as this validate method (verify is used in plain js)
   ) {
-    const user = await this.userService.getByUsername(username);
+    const user = await this.userRepository
+      .createQueryBuilder('u')
+      .addSelect('u.password')
+      .where({ username })
+      .getOne();
     const passwordsMatched = await bcrypt.compare(pass, user?.password || '');
     const errd = !user || !passwordsMatched;
     if (errd) {

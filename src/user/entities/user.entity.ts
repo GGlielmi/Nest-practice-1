@@ -10,7 +10,7 @@ export class User {
   @Column()
   username: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @Index(USER_EMAIL_INDEX.constraint, { unique: true })
