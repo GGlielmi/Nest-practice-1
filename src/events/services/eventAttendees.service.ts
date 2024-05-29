@@ -12,15 +12,15 @@ export class EventAttendeeService {
     private readonly eventAttendeesRepository: Repository<EventAttendee>,
   ) {}
 
-  private findOne(eventId: number, attendeeId: number) {
+  private findOne(eventId: number, attendeeId: number, organizerId: number) {
     return this.eventAttendeesRepository.findOne({
-      where: { eventId, attendeeId },
+      where: { eventId, attendeeId, event: { organizerId } },
       relations: ['event', 'attendee'],
     });
   }
 
-  async getOne(eventId: number, attendeeId: number) {
-    const eventAttendee = await this.findOne(eventId, attendeeId);
+  async getOne(eventId: number, attendeeId: number, organizerId: number) {
+    const eventAttendee = await this.findOne(eventId, attendeeId, organizerId);
     if (!eventAttendee) throw new NotFoundException();
     return eventAttendee;
   }
@@ -38,8 +38,8 @@ export class EventAttendeeService {
     await manager.save(attendee);
   }
 
-  async delete(eventId: number, attendeeId: number) {
-    const eventAttendee = await this.findOne(eventId, attendeeId);
+  async delete(eventId: number, attendeeId: number, organizerId: number) {
+    const eventAttendee = await this.findOne(eventId, attendeeId, organizerId);
     return this.eventAttendeesRepository.remove(eventAttendee);
   }
 }

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
 
 export class CreateAttendeeDto {
   @IsNotEmpty()
@@ -10,4 +10,8 @@ export class CreateAttendeeDto {
   @IsOptional()
   @IsNumber()
   funds: number = 0;
+
+  @Min(0)
+  @IsInt()
+  userId: number;
 }

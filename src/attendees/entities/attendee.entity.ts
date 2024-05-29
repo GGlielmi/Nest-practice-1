@@ -1,6 +1,14 @@
 import { DOLAR_COST } from 'src/constants';
 import { EventAttendee } from 'src/events/entities/EventAttendee.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/user/entities/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Attendee {
@@ -23,6 +31,15 @@ export class Attendee {
   })
   funds: number;
 
-  @OneToMany(() => EventAttendee, (eventAttendee) => eventAttendee.attendee)
+  @OneToMany(() => EventAttendee, (eventAttendee) => eventAttendee.attendee, {
+    onDelete: 'CASCADE',
+  })
   eventAttendees: EventAttendee[];
+
+  @Column()
+  userId: number;
+
+  @OneToOne(() => User, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId' })
+  user: User;
 }

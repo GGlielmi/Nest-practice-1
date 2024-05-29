@@ -45,6 +45,7 @@ export class Consumable {
   @OneToMany(
     () => EventConsumable,
     (eventConsumable) => eventConsumable.consumable,
+    { onDelete: 'CASCADE' },
   )
   eventConsumables: EventConsumable[];
 }

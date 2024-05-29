@@ -42,9 +42,16 @@ export class EventsController {
 
   @ApiOperation({ summary: 'Get event by id' })
   @Get(':id')
-  findById(@Param('id') id: number): Promise<GetEvent> {
-    return this.eventService.getById(id, {
-      eventAttendees: { attendeeId: true },
+  findById(
+    @Param('id') id: number,
+    @CurrentUser() user: User,
+  ): Promise<GetEvent> {
+    return this.eventService.getById({
+      eventId: id,
+      organizerId: user.userId,
+      select: {
+        eventAttendees: { attendeeId: true },
+      },
     });
   }
 
@@ -84,8 +91,13 @@ export class EventsController {
   async addAttendeeToEvent(
     @Param('attendeeId') attendeeId: number,
     @Param('eventId') eventId: number,
+    @CurrentUser() user: User,
   ) {
-    return this.eventService.addAttendeeToEvent(attendeeId, eventId);
+    return this.eventService.addAttendeeToEvent(
+      attendeeId,
+      eventId,
+      user.userId,
+    );
   }
 
   @ApiOperation({ summary: 'Removes atendee from existing event' })
@@ -97,12 +109,25 @@ export class EventsController {
   async removeAttendeeFromEvent(
     @Param('attendeeId') attendeeId: number,
     @Param('eventId') eventId: number,
+    @CurrentUser() user: User,
   ) {
-    return this.eventService.removeAttendeeFromEvent(attendeeId, eventId);
+    return this.eventService.removeAttendeeFromEvent(
+      attendeeId,
+      eventId,
+      user.userId,
+    );
   }
 
   @Get(':eventId/consumables/:consumableId')
-  async removeConsumableFromEvent(eventId: number, consumableId: number) {
-    return this.eventService.removeConsumableFromEvent(eventId, consumableId);
+  async removeConsumableFromEvent(
+    @Param('eventId') eventId: number,
+    @Param('consumableId') consumableId: number,
+    @CurrentUser() user: User,
+  ) {
+    return this.eventService.removeConsumableFromEvent({
+      eventId,
+      organizerId: user.userId,
+      consumableId,
+    });
   }
 }

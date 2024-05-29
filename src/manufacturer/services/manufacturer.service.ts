@@ -46,13 +46,35 @@ export class ManufacturersService {
     return this.manufacturerRepository.remove(manufacturer);
   }
 
-  async addConsumableToEvent(consumableId: number, eventId: number) {
-    const consumable = await this.consumableService.getById(consumableId);
-    await this.eventService.addConsumableToEvent(eventId, consumable);
+  async addConsumableToEvent(
+    consumableId: number,
+    eventId: number,
+    manufacturerId: number,
+  ) {
+    const consumable = await this.consumableService.getById(
+      consumableId,
+      manufacturerId,
+    );
+    await this.eventService.addConsumableToEvent(
+      eventId,
+      consumable,
+      manufacturerId,
+    );
   }
 
-  async removeConsumableFromEvent(consumableId: number, eventId: number) {
-    const consumable = await this.consumableService.getById(consumableId);
-    await this.eventService.removeConsumableFromEvent(eventId, consumable);
+  async removeConsumableFromEvent(
+    consumableId: number,
+    eventId: number,
+    manufacturerId: number,
+  ) {
+    const consumable = await this.consumableService.getById(
+      consumableId,
+      manufacturerId,
+    );
+    await this.eventService.removeConsumableFromEvent({
+      eventId,
+      consumable,
+      manufacturerId,
+    });
   }
 }

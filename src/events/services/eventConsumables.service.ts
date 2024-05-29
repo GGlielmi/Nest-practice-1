@@ -12,9 +12,19 @@ export class EventConsumableService {
     private readonly eventConsumablesRepository: Repository<EventConsumable>,
   ) {}
 
-  findOne(eventId: number, consumableId: number) {
+  findOne(
+    eventId: number,
+    consumableId: number,
+    organizerId: number,
+    manufacturerId: number,
+  ) {
     return this.eventConsumablesRepository.findOneOrFail({
-      where: { eventId, consumableId },
+      where: {
+        eventId,
+        consumableId,
+        ...(organizerId && { event: { organizerId } }),
+        ...(manufacturerId && { consumable: { manufacturerId } }),
+      },
       relations: { event: true, consumable: true },
     });
   }
@@ -30,8 +40,18 @@ export class EventConsumableService {
     );
   }
 
-  async delete(eventId: number, consumableId: number) {
-    const eventConsumable = await this.findOne(eventId, consumableId);
+  async delete(
+    eventId: number,
+    consumableId: number,
+    organizerId: number,
+    manufacturerId: number,
+  ) {
+    const eventConsumable = await this.findOne(
+      eventId,
+      consumableId,
+      organizerId,
+      manufacturerId,
+    );
     return this.eventConsumablesRepository.remove(eventConsumable);
   }
 }

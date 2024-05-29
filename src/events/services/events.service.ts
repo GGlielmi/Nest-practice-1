@@ -37,13 +37,39 @@ export class EventsService {
     return this.eventRepository.save(input); // `.save()` inserts if doesn't exist
   }
 
-  async getById(id: number, select?: FindOptionsSelect<Event>) {
+  async getById({
+    eventId,
+    organizerId,
+    manufacturerId,
+    select,
+  }: {
+    eventId: number;
+    organizerId?: number;
+    manufacturerId?: number;
+    select?: FindOptionsSelect<Event>;
+  } & (
+    | {
+        manufacturerId: number;
+      }
+    | {
+        organizerId: number;
+      }
+  )) {
     return this.eventRepository.findOneOrFail({
-      where: { eventId: id },
+      where: {
+        eventId,
+        ...(organizerId && { organizerId }),
+        ...(manufacturerId && {
+          eventConsumables: { consumable: { manufacturerId } },
+        }),
+      },
       select,
       relations: [
         ...(select?.['eventAttendees'] ? ['eventAttendees'] : []),
         ...(select?.['eventConsumables'] ? ['eventConsumables'] : []),
+        ...(manufacturerId
+          ? ['eventConsumables.consumable.manufacturerId']
+          : []),
       ],
     });
   }
@@ -69,40 +95,66 @@ export class EventsService {
     if (!result.affected) throw new NotFoundException();
   }
 
-  async addAttendeeToEvent(attendeeId: number, eventId: number) {
-    const event = await this.getById(eventId);
+  async addAttendeeToEvent(
+    attendeeId: number,
+    eventId: number,
+    organizerId: number,
+  ) {
+    const event = await this.getById({ eventId, organizerId });
     const attendee = await this.attendeeService.getById(attendeeId);
     this.eventRepository.manager.transaction(async (manager) => {
       await this.eventAttendeeService.create(event, attendee, manager);
     });
   }
 
-  async removeAttendeeFromEvent(attendeeId: number, eventId: number) {
-    await this.eventAttendeeService.delete(eventId, attendeeId);
+  async removeAttendeeFromEvent(
+    attendeeId: number,
+    eventId: number,
+    organizerId: number,
+  ) {
+    await this.eventAttendeeService.delete(eventId, attendeeId, organizerId);
   }
 
-  async addConsumableToEvent(eventId: number, consumable: Consumable) {
-    const event = await this.getById(eventId, {
-      eventConsumables: { consumableId: true },
-    });
-    await this.eventConsumableService.create(event, consumable);
-  }
-
-  removeConsumableFromEvent(
+  async addConsumableToEvent(
     eventId: number,
     consumable: Consumable,
-  ): Promise<void>;
-  removeConsumableFromEvent(
-    eventId: number,
-    consumableId: number,
-  ): Promise<void>;
+    manufacturerId: number,
+  ) {
+    const event = await this.getById({
+      eventId,
+      manufacturerId,
+      select: {
+        eventConsumables: { consumableId: true },
+      },
+    });
+    console.log(event);
+    // await this.eventConsumableService.create(event, consumable);
+  }
 
-  async removeConsumableFromEvent(eventId: unknown, consumable: unknown) {
+  async removeConsumableFromEvent(args: {
+    eventId: number;
+    consumable: Consumable;
+    manufacturerId: number;
+  }): Promise<void>;
+
+  async removeConsumableFromEvent(args: {
+    eventId: number;
+    consumableId: number;
+    organizerId: number;
+  }): Promise<void>;
+
+  async removeConsumableFromEvent({
+    eventId,
+    consumable,
+    consumableId,
+    organizerId,
+    manufacturerId,
+  }) {
     await this.eventConsumableService.delete(
-      eventId as number,
-      consumable instanceof Consumable
-        ? consumable.consumableId
-        : (consumable as number),
+      eventId,
+      organizerId,
+      consumableId ?? (consumable as Consumable).consumableId,
+      manufacturerId,
     );
   }
 }

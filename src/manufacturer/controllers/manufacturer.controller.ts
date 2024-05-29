@@ -17,6 +17,8 @@ import { CreateConsumableDto } from '../dto/create-consumable.dto';
 import { FindConsumableDto } from '../dto/find-consumable.dto';
 import { UpdateConsumableDto } from '../dto/update-consumable.dto';
 import { ConsumablesService } from '../services/consumables.service';
+import { CurrentUser } from 'src/decorators/getUser.decorator';
+import { User } from 'src/user/entities/user.entity';
 
 @ApiTags('Manufacturers')
 @Controller('manufacturer')
@@ -63,15 +65,25 @@ export class ManufacturerController {
   async addConsumableToEvent(
     @Param('consumableId') consumableId: number,
     @Param('eventId') eventId: number,
+    @CurrentUser() user: User,
   ) {
-    return this.manufacturerService.addConsumableToEvent(consumableId, eventId);
+    return this.manufacturerService.addConsumableToEvent(
+      consumableId,
+      eventId,
+      user.userId,
+    );
   }
 
   @Get(':consumableId/:eventId')
-  async removeConsumableFromEvent(consumableId: number, eventId: number) {
+  async removeConsumableFromEvent(
+    @Param('consumableId') consumableId: number,
+    @Param('eventId') eventId: number,
+    @CurrentUser() user: User,
+  ) {
     return this.manufacturerService.removeConsumableFromEvent(
       consumableId,
       eventId,
+      user.userId,
     );
   }
 
@@ -89,8 +101,8 @@ export class ManufacturerController {
 
   @Get('/consumables/:id')
   @ApiOperation({ summary: 'Get consumables by id' })
-  findOneConsumable(@Param('id') id: string) {
-    return this.consumableService.getById(+id);
+  findOneConsumable(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.consumableService.getById(+id, user.userId);
   }
 
   @Patch('/consumables/:id')
@@ -98,13 +110,14 @@ export class ManufacturerController {
   updateConsumable(
     @Param('id') id: string,
     @Body() updateConsumableDto: UpdateConsumableDto,
+    @CurrentUser() user: User,
   ) {
-    return this.consumableService.update(+id, updateConsumableDto);
+    return this.consumableService.update(+id, user.userId, updateConsumableDto);
   }
 
   @Delete('/consumables/:id')
   @ApiOperation({ summary: 'Delete consumable' })
-  removeConsumable(@Param('id') id: string) {
-    return this.consumableService.remove(+id);
+  removeConsumable(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.consumableService.remove(+id, user.userId);
   }
 }

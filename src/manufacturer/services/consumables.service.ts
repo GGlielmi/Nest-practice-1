@@ -29,14 +29,19 @@ export class ConsumablesService {
     return this.consumableRepository.find({ where: query });
   }
 
-  async getById(id: number) {
+  async getById(id: number, manufacturerId: number) {
     return this.consumableRepository.findOneByOrFail({
       consumableId: id,
+      manufacturerId,
     });
   }
 
-  async update(id: number, updateConsumableDto: UpdateConsumableDto) {
-    const consumable = await this.getById(id);
+  async update(
+    id: number,
+    manufacturerId: number,
+    updateConsumableDto: UpdateConsumableDto,
+  ) {
+    const consumable = await this.getById(id, manufacturerId);
     return this.consumableRepository.save(
       this.consumableRepository.create({
         ...consumable,
@@ -45,8 +50,8 @@ export class ConsumablesService {
     );
   }
 
-  async remove(id: number) {
-    const consumable = await this.getById(id);
+  async remove(id: number, manufacturerId: number) {
+    const consumable = await this.getById(id, manufacturerId);
     return this.consumableRepository.remove(consumable);
   }
 }

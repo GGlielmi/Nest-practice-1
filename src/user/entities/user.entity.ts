@@ -1,10 +1,13 @@
 import { USERNAME_INDEX, USER_EMAIL_INDEX } from 'src/constants/uniqueIndexes';
 import { Event } from 'src/events/entities/Event.entity';
+import { Manufacturer } from 'src/manufacturer/entities/Manufacturer.entity';
 import {
   Column,
   Entity,
   Index,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
