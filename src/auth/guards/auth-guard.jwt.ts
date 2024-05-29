@@ -15,15 +15,16 @@ export class AuthGuardJwt extends AuthGuard('jwt') {
   ) {
     super();
   }
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    if (this.configService.environment === 'development') return true;
+  async canActivate(context: ExecutionContext) {
+    if (this.configService.environment === 'development') {
+      await super.canActivate(context); //  needs to be executed to populate User in request
+      return true;
+    }
     const noAuth = this.reflector.get<boolean>(
       NO_AUTH_METADATA,
       context.getHandler(),
     );
     if (noAuth) return true;
-    return super.canActivate(context);
+    return super.canActivate(context) as Promise<boolean>;
   }
 }

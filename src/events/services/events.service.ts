@@ -4,11 +4,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsRelations, FindOptionsSelect, Repository } from 'typeorm';
 import { Event } from '../entities/Event.entity';
 import { EventFindParams } from '../params/eventFind.dto';
-import { UpdateAttendeeDto } from 'src/attendees/dto/update-attendee.dto';
 import { AttendeesService } from 'src/attendees/services/attendees.service';
 import { EventAttendeeService } from './eventAttendees.service';
 import { EventConsumableService } from './eventConsumables.service';
 import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
+import { UpdateEventDto } from '../dtos/UpdateEvent.dto';
 
 @Injectable()
 export class EventsService {
@@ -34,7 +34,7 @@ export class EventsService {
   }
 
   save(input: CreateEventDto) {
-    return this.eventRepository.save(input);
+    return this.eventRepository.save(input); // `.save()` inserts if doesn't exist
   }
 
   async getById(id: number, select?: FindOptionsSelect<Event>) {
@@ -53,13 +53,19 @@ export class EventsService {
     if (!exists) throw new NotFoundException();
   }
 
-  async update(event: UpdateAttendeeDto) {
-    await this.checkExistence(event.id);
-    return this.eventRepository.save(event); // `.save()` inserts if doesn't exist
+  async update(eventId: number, organizerId: number, event: UpdateEventDto) {
+    const result = await this.eventRepository.update(
+      { eventId, organizerId },
+      event,
+    );
+    if (!result.affected) throw new NotFoundException();
   }
 
-  async delete(id: number) {
-    const result = await this.eventRepository.delete(id);
+  async delete(id: number, organizerId: number) {
+    const result = await this.eventRepository.delete({
+      eventId: id,
+      organizerId,
+    });
     if (!result.affected) throw new NotFoundException();
   }
 

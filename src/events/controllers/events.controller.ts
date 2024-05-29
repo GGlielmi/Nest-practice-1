@@ -64,14 +64,15 @@ export class EventsController {
   async update(
     @Param('id') id: number,
     @Body() updateEventDto: UpdateEventDto,
+    @CurrentUser() user: User,
   ) {
-    return this.eventService.update({ id, ...updateEventDto });
+    return this.eventService.update(id, user.userId, updateEventDto);
   }
 
   @ApiOperation({ summary: 'Delete event' })
   @Delete(':id')
-  async delete(@Param('id') id: number) {
-    return this.eventService.delete(id);
+  async delete(@Param('id') id: number, @CurrentUser() user: User) {
+    return this.eventService.delete(id, user.userId);
   }
 
   @ApiOperation({ summary: 'Adds atendee to existing event' })

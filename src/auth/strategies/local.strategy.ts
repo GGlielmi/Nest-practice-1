@@ -23,7 +23,7 @@ type TCredentials = {
 
 export const credentialsKeysSchema: TCredentials = Object.values(
   credentialsStructure,
-).reduce((p, c) => ({ ...p, [c]: 'string' }), {} as any);
+).reduce((p, c) => ({ ...p, [c]: 'guido' }), {} as any);
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
