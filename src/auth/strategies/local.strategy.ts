@@ -53,8 +53,11 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       .addSelect('u.password')
       .where({ username })
       .getOne();
-    const passwordsMatched = await bcrypt.compare(pass, user?.password || '');
-    const errd = !user || !passwordsMatched;
+
+    if (!user) this.err(`User '${username}' doesn't exist`);
+
+    const passwordsMatched = await bcrypt.compare(pass, user.password);
+
     this.loginService
       .create({
         credentials: [username, pass],
@@ -62,18 +65,19 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         ipAddress:
           req.headers['x-forwarded-for']?.toString() ||
           req.socket.remoteAddress,
-        failed: errd,
+        failed: !passwordsMatched,
       })
       .catch(console.log);
-    if (errd) {
-      this.logger.warn(
-        !user
-          ? `User '${username}' doesn't exist`
-          : `Invalid credentials for user '${username}'`,
-        'AUTHENTICATION FAIL',
-      );
-      throw new UnauthorizedException();
+
+    if (!passwordsMatched) {
+      this.err(`Invalid credentials for user '${username}'`);
     }
+
     return user; // this is added to `.user` prop of the request
+  }
+
+  private err(message: string) {
+    this.logger.warn(message, 'AUTHENTICATION FAIL');
+    throw new UnauthorizedException();
   }
 }
