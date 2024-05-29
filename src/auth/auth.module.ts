@@ -21,7 +21,7 @@ import { UserModule } from 'src/user/user.module';
       useFactory: async (configService: ConfigService) => {
         return {
           secret: configService.get('config').jwt.secret,
-          signOptions: { expiresIn: '60m' },
+          signOptions: { expiresIn: '24h' },
         };
       },
     }),
