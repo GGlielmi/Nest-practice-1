@@ -39,6 +39,7 @@ export class Event {
 
   @Column({
     default: 0,
+    type: 'real',
     transformer: {
       from: (value) => value * DOLAR_COST,
       to: (value) => value / DOLAR_COST,
