@@ -25,9 +25,12 @@ async function bootstrap() {
     .setDescription('API for saving social events')
     .setVersion('1.0')
     .addTag('Events')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: { tagsSorter: 'alpha' },
+  });
 
   await app.listen(3000);
 }

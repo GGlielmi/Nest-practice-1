@@ -8,7 +8,7 @@ import { AuthGuardLocal } from './guards/auth-guard.local';
 import { NoAuth } from 'src/helpers/NoAuthMetadata';
 
 @Controller('auth')
-@ApiTags('Auth')
+@ApiTags('!Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
