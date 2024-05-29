@@ -9,7 +9,6 @@ import {
   Query,
   UseInterceptors,
 } from '@nestjs/common';
-import { CreateEventDto } from '../dtos/CreateEvent.dto';
 import { UpdateEventDto } from '../dtos/UpdateEvent.dto';
 import { EventFindParams } from '../params/eventFind.dto';
 import { EventsService } from '../services/events.service';
@@ -22,6 +21,9 @@ import {
 } from '@nestjs/swagger';
 import { GetEvent } from '../dtos/GetEvent.dto';
 import { PaginationResultInterceptor } from 'src/interceptors/pagination-result/pagination-result.interceptor';
+import { CurrentUser } from 'src/decorators/getUser.decorator';
+import { BaseEventDto } from '../dtos/BaseEvent.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @Controller('events')
 @ApiTags('Events')
@@ -49,8 +51,11 @@ export class EventsController {
   @ApiOperation({ summary: 'Create event' })
   @ApiCreatedResponse()
   @Post()
-  create(@Body() createEventDto: CreateEventDto) {
-    return this.eventService.save(createEventDto);
+  create(@Body() baseEventDto: BaseEventDto, @CurrentUser() user: User) {
+    return this.eventService.save({
+      ...baseEventDto,
+      organizerId: user.userId,
+    });
   }
 
   @ApiOperation({ summary: 'Update event partially' })

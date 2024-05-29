@@ -1,10 +1,11 @@
-import { Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { credentialsKeysSchema } from './local.strategy';
+import { credentialsKeysSchema } from './strategies/local.strategy';
 import { User as UserEntity } from 'src/user/entities/user.entity';
-import { User } from 'src/decorators/getUser.decorator';
+import { CurrentUser } from 'src/decorators/getUser.decorator';
+import { AuthGuardLocal } from './guards/auth-guard.local';
+import { NoAuth } from 'src/helpers/NoAuthMetadata';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -12,10 +13,10 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @NoAuth()
   @ApiBody({ schema: { example: credentialsKeysSchema } })
-  @UseGuards(AuthGuard('local')) // 'local' is default value for PassportStrategy
-  // it calls the validate method on the class that implements it
-  async login(@User() user: UserEntity) {
+  @UseGuards(AuthGuardLocal)
+  async login(@CurrentUser() user: UserEntity) {
     return {
       userId: user.userId,
       token: this.authService.getToken(user),

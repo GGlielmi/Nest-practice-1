@@ -27,6 +27,7 @@ export const credentialsKeysSchema: TCredentials = Object.values(
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
+  // strategy only for login (where token is not needed in headers)
   private readonly logger = new Logger(LocalStrategy.name);
 
   constructor(
@@ -38,8 +39,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       ...credentialsStructure,
       passReqToCallback: true,
       session: true,
-      // secretOrKey: configService.jwtSecret,
-      // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     } as IStrategyOptionsWithRequest);
   }
 

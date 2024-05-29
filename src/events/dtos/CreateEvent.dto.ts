@@ -1,24 +1,8 @@
-import { IsDate, IsOptional, Length, Max, Min } from 'class-validator';
+import { IsInt, Min } from 'class-validator';
+import { BaseEventDto } from './BaseEvent.dto';
 
-export class CreateEventDto {
-  @Length(1)
-  name: string = undefined; // set to undefined to easily create an array out of instance properties
-
-  @Length(1, 100)
-  description: string = undefined;
-
-  @IsDate()
-  when: Date = undefined;
-
-  @Length(1)
-  address: string = undefined;
-
-  @IsOptional()
+export class CreateEventDto extends BaseEventDto {
   @Min(0)
-  minRequiredAge: number = undefined;
-
-  @IsOptional()
-  @Min(0)
-  @Max(1_000_000)
-  cost?: number = undefined;
+  @IsInt()
+  organizerId: number = undefined; // set to undefined to easily create an array out of instance properties
 }

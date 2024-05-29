@@ -13,6 +13,7 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { FindUserDto } from '../dto/find-user.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { NoAuth } from 'src/helpers/NoAuthMetadata';
 
 @Controller('user')
 @ApiTags('Users')
@@ -20,6 +21,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @NoAuth()
   @ApiOperation({ summary: 'Creates a user' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
