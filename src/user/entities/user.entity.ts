@@ -1,22 +1,17 @@
-import {
-  attendeeUsernameIndex,
-  attendeeEmailIndex,
-} from 'src/constants/uniqueIndexes';
-import { Column, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, PrimaryGeneratedColumn } from 'typeorm';
 
-// @Entity()
 export class User {
+  role: string;
+
   @PrimaryGeneratedColumn()
   userId: number;
 
-  // @Index(attendeeUsernameIndex.constraint, { unique: true })
   @Column()
   username: string;
 
   @Column({ select: false })
   password: string;
 
-  // @Index(attendeeEmailIndex.constraint, { unique: true })
   @Column()
   email: string;
 

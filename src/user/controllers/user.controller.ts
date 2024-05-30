@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { NoAuth } from 'src/helpers/NoAuthMetadata';
+import { NoAuth } from 'src/decorators/NoAuthMetadata';
 import { AttendeesService } from 'src/attendees/services/attendees.service';
 import { ManufacturersService } from 'src/manufacturer/services/manufacturer.service';
 import { CreateAttendeeDto } from 'src/attendees/dto/create-attendee.dto';

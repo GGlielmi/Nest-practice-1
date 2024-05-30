@@ -5,7 +5,7 @@ import { credentialsKeysSchema } from './strategies/local.strategy';
 import { User as UserEntity } from 'src/user/entities/user.entity';
 import { CurrentUser } from 'src/decorators/getUser.decorator';
 import { AuthGuardLocal } from './guards/auth-guard.local';
-import { NoAuth } from 'src/helpers/NoAuthMetadata';
+import { NoAuth } from 'src/decorators/NoAuthMetadata';
 
 @Controller('auth')
 @ApiTags('!Auth')

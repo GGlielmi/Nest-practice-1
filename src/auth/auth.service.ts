@@ -14,7 +14,11 @@ export class AuthService {
   ) {}
 
   getToken(user: User) {
-    return this.jwtService.sign({ username: user.username, sub: user.userId });
+    return this.jwtService.sign({
+      username: user.username,
+      sub: user.userId,
+      role: user.role,
+    });
   }
 
   async hashPassword(pass: string) {

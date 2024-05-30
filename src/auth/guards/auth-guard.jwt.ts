@@ -3,7 +3,7 @@ import { ConfigType } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import configuration from 'src/config/configuration';
-import { NO_AUTH_METADATA } from 'src/helpers/NoAuthMetadata';
+import { NO_AUTH_METADATA } from 'src/decorators/NoAuthMetadata';
 
 @Injectable()
 export class AuthGuardJwt extends AuthGuard('jwt') {
@@ -14,6 +14,7 @@ export class AuthGuardJwt extends AuthGuard('jwt') {
   ) {
     super();
   }
+
   async canActivate(context: ExecutionContext) {
     if (this.configService.environment === 'development') {
       try {

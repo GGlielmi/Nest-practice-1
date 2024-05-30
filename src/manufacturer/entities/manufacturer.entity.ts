@@ -15,9 +15,7 @@ import {
 @Entity()
 export class Manufacturer extends User {
   static role = 'Manufacturer' as const;
-
-  @PrimaryGeneratedColumn() // with autoincrement
-  manufacturerId: number;
+  role = Manufacturer.role;
 
   @Index(manufacturerUsernameIndex.constraint, { unique: true })
   username: string;

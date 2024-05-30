@@ -17,15 +17,13 @@ import {
 @Entity()
 export class Attendee extends User {
   static role = 'Attendee' as const;
+  role = Attendee.role;
 
   @Index(attendeeUsernameIndex.constraint, { unique: true })
   username: string;
 
   @Index(attendeeEmailIndex.constraint, { unique: true })
   email: string;
-
-  @PrimaryGeneratedColumn()
-  attendeeId: number;
 
   @Column()
   name: string;
@@ -47,13 +45,6 @@ export class Attendee extends User {
     onDelete: 'CASCADE', // if I delete an event, the eventAttendee should be deleted
   })
   eventAttendees: EventAttendee[];
-
-  // @Column()
-  // userId: number;
-
-  // @OneToOne(() => User, { onDelete: 'CASCADE' })
-  // @JoinColumn({ name: 'userId' })
-  // user: User;
 
   @OneToMany(() => Event, (event) => event.organizer, {
     onDelete: 'CASCADE',

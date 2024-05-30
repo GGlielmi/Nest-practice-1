@@ -31,11 +31,11 @@ export class AttendeesService {
   }
 
   async getById(id: number) {
-    return this.attendeeRepository.findOneByOrFail({ attendeeId: id });
+    return this.attendeeRepository.findOneByOrFail({ userId: id });
   }
 
   async checkExistence(id: number) {
-    const exists = await this.attendeeRepository.existsBy({ attendeeId: id });
+    const exists = await this.attendeeRepository.existsBy({ userId: id });
     if (!exists) throw new NotFoundException();
   }
 

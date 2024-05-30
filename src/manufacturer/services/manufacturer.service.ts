@@ -27,7 +27,7 @@ export class ManufacturersService {
 
   async getById(id: number) {
     return this.manufacturerRepository.findOneByOrFail({
-      manufacturerId: id,
+      userId: id,
     });
   }
 

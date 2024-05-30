@@ -31,7 +31,7 @@ export class EventAttendeeService {
         event,
         attendee,
         eventId: event.eventId,
-        attendeeId: attendee.attendeeId,
+        attendeeId: attendee.userId,
       }),
     );
     attendee.funds -= event.cost;
