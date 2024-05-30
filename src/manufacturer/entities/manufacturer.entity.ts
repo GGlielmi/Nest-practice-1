@@ -4,13 +4,7 @@ import {
 } from 'src/constants/uniqueIndexes';
 import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
 import { User } from 'src/user/entities/user.entity';
-import {
-  Column,
-  Entity,
-  Index,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 
 @Entity()
 export class Manufacturer extends User {

@@ -16,7 +16,11 @@ export class AuthGuardJwt extends AuthGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext) {
-    if (this.configService.environment === 'development') {
+    const noAuth = this.reflector.get<boolean>(
+      NO_AUTH_METADATA,
+      context.getHandler(),
+    );
+    if (noAuth || this.configService.environment === 'development') {
       try {
         await super.canActivate(context); //  needs to be executed to populate User in request
       } catch (err) {
@@ -24,11 +28,6 @@ export class AuthGuardJwt extends AuthGuard('jwt') {
       }
       return true;
     }
-    const noAuth = this.reflector.get<boolean>(
-      NO_AUTH_METADATA,
-      context.getHandler(),
-    );
-    if (noAuth) return true;
     return super.canActivate(context) as Promise<boolean>;
   }
 }

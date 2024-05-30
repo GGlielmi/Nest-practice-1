@@ -18,7 +18,9 @@ export class ManufacturersService {
   ) {}
 
   create(createManufacturerDto: CreateManufacturerDto) {
-    return this.manufacturerRepository.save(createManufacturerDto);
+    return this.manufacturerRepository.save(
+      this.manufacturerRepository.create(createManufacturerDto),
+    );
   }
 
   findAll(query: FindManufacturerDto) {

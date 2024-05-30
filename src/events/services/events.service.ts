@@ -34,7 +34,7 @@ export class EventsService {
   }
 
   save(input: CreateEventDto) {
-    return this.eventRepository.save(input); // `.save()` inserts if doesn't exist
+    return this.eventRepository.save(this.eventRepository.create(input)); // `.save()` inserts if doesn't exist
   }
 
   async getById({
@@ -102,7 +102,7 @@ export class EventsService {
   ) {
     const event = await this.getById({ eventId, organizerId });
     const attendee = await this.attendeeService.getById(attendeeId);
-    this.eventRepository.manager.transaction(async (manager) => {
+    await this.eventRepository.manager.transaction(async (manager) => {
       await this.eventAttendeeService.create(event, attendee, manager);
     });
   }

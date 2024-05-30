@@ -6,13 +6,7 @@ import {
 import { Event } from 'src/events/entities/Event.entity';
 import { EventAttendee } from 'src/events/entities/EventAttendee.entity';
 import { User } from 'src/user/entities/user.entity';
-import {
-  Column,
-  Entity,
-  Index,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 
 @Entity()
 export class Attendee extends User {

@@ -68,14 +68,6 @@ export class Event {
   )
   eventAttendees: EventAttendee[];
 
-  validateAttendeeAge(attendee: Attendee) {
-    if (this.minRequiredAge > attendee.age) {
-      throw new BadRequestException(
-        `Attendee ${attendee.name} is underaged for desired event`,
-      );
-    }
-  }
-
   finishDate: Date;
   @AfterLoad()
   setFinishDate() {
