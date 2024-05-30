@@ -11,5 +11,6 @@ import { Consumable } from './entities/Consumable.entity';
   imports: [TypeOrmModule.forFeature([Manufacturer, Consumable]), EventsModule],
   controllers: [ManufacturerController],
   providers: [ManufacturersService, ConsumablesService],
+  exports: [ManufacturersService],
 })
 export class ManufacturerModule {}

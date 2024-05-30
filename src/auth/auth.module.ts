@@ -5,16 +5,19 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { User } from 'src/user/entities/user.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { UserModule } from 'src/user/user.module';
+import { AttendeesModule } from 'src/attendees/attendees.module';
+import { Manufacturer } from 'src/manufacturer/entities/Manufacturer.entity';
+import { Attendee } from 'src/attendees/entities/attendee.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ManufacturerModule } from 'src/manufacturer/manufacturer.module';
 
 @Module({
   imports: [
     LoginModule,
-    TypeOrmModule.forFeature([User]),
-    UserModule,
+    AttendeesModule,
+    ManufacturerModule,
+    TypeOrmModule.forFeature([Attendee, Manufacturer]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

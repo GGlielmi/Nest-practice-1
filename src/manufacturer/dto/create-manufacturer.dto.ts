@@ -1,11 +1,8 @@
-import { IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
-export class CreateManufacturerDto {
+export class CreateManufacturerDto extends CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
-
-  @Min(0)
-  @IsInt()
-  userId: number;
+  brand: string;
 }

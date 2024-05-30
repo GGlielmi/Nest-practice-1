@@ -1,31 +1,35 @@
+import {
+  manufacturerEmailIndex,
+  manufacturerUsernameIndex,
+} from 'src/constants/uniqueIndexes';
 import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
+  Index,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
-export class Manufacturer {
+export class Manufacturer extends User {
+  static role = 'Manufacturer' as const;
+
   @PrimaryGeneratedColumn() // with autoincrement
   manufacturerId: number;
 
+  @Index(manufacturerUsernameIndex.constraint, { unique: true })
+  username: string;
+
+  @Index(manufacturerEmailIndex.constraint, { unique: true })
+  email: string;
+
   @Column()
-  name: string;
+  brand: string;
 
   @OneToMany(() => Consumable, (consumable) => consumable.manufacturer, {
     onDelete: 'CASCADE',
   })
   consumables: Consumable[];
-
-  @Column()
-  userId: number;
-
-  @OneToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
-  user: User;
 }

@@ -1,6 +1,7 @@
-import { IsInt, IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
-export class CreateAttendeeDto {
+export class CreateAttendeeDto extends CreateUserDto {
   @IsNotEmpty()
   name: string;
 
@@ -10,8 +11,4 @@ export class CreateAttendeeDto {
   @IsOptional()
   @IsNumber()
   funds: number = 0;
-
-  @Min(0)
-  @IsInt()
-  userId: number;
 }

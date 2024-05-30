@@ -28,7 +28,9 @@ export class EventConsumable {
   @JoinColumn({ name: 'eventId' })
   public event: Event;
 
-  @ManyToOne(() => Consumable, (consumable) => consumable.eventConsumables)
+  @ManyToOne(() => Consumable, (consumable) => consumable.eventConsumables, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'consumableId' })
   public consumable: Consumable;
 }

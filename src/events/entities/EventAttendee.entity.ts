@@ -23,11 +23,15 @@ export class EventAttendee {
   @Column()
   attendeeId: number;
 
-  @ManyToOne(() => Event, (event) => event.eventAttendees)
+  @ManyToOne(() => Event, (event) => event.eventAttendees, {
+    onDelete: 'CASCADE', // if I delete an event, the eventAttendee should be deleted
+  })
   @JoinColumn({ name: 'eventId' })
   public event: Event;
 
-  @ManyToOne(() => Attendee, (attendee) => attendee.eventAttendees)
+  @ManyToOne(() => Attendee, (attendee) => attendee.eventAttendees, {
+    onDelete: 'CASCADE', // if I delete an an attendee, the eventAttendee should be deleted
+  })
   @JoinColumn({ name: 'attendeeId' })
   public attendee: Attendee;
 

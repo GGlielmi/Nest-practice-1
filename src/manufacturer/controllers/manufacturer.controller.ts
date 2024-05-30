@@ -9,7 +9,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ManufacturersService } from '../services/manufacturer.service';
-import { CreateManufacturerDto } from '../dto/create-manufacturer.dto';
 import { UpdateManufacturerDto } from '../dto/update-manufacturer.dto';
 import { FindManufacturerDto } from '../dto/find-manufacturer.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -28,12 +27,6 @@ export class ManufacturerController {
     private readonly consumableService: ConsumablesService,
   ) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Creates a manufacturer' })
-  create(@Body() createManufacturerDto: CreateManufacturerDto) {
-    return this.manufacturerService.create(createManufacturerDto);
-  }
-
   @Get()
   @ApiOperation({ summary: 'Get manufacturers through http query' })
   findAll(@Query() query: FindManufacturerDto) {
@@ -41,7 +34,7 @@ export class ManufacturerController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get manufacturers by id' })
+  @ApiOperation({ summary: 'Get manufacturer by id' })
   findOne(@Param('id') id: string) {
     return this.manufacturerService.getById(+id);
   }
@@ -62,6 +55,7 @@ export class ManufacturerController {
   }
 
   @Get(':consumableId/:eventId')
+  @ApiOperation({ summary: 'Add consumable to event' })
   async addConsumableToEvent(
     @Param('consumableId') consumableId: number,
     @Param('eventId') eventId: number,
@@ -75,6 +69,7 @@ export class ManufacturerController {
   }
 
   @Get(':consumableId/:eventId')
+  @ApiOperation({ summary: 'Removes consumable from event' })
   async removeConsumableFromEvent(
     @Param('consumableId') consumableId: number,
     @Param('eventId') eventId: number,
@@ -88,7 +83,7 @@ export class ManufacturerController {
   }
 
   @Post('consumables')
-  @ApiOperation({ summary: 'Creates a consumabl' })
+  @ApiOperation({ summary: 'Creates a consumable' })
   createConsumable(@Body() createConsumableDto: CreateConsumableDto) {
     return this.consumableService.create(createConsumableDto);
   }
@@ -100,7 +95,7 @@ export class ManufacturerController {
   }
 
   @Get('/consumables/:id')
-  @ApiOperation({ summary: 'Get consumables by id' })
+  @ApiOperation({ summary: 'Get consumable by id' })
   findOneConsumable(@Param('id') id: string, @CurrentUser() user: User) {
     return this.consumableService.getById(+id, user.userId);
   }

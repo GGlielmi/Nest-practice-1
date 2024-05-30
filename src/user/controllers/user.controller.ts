@@ -1,53 +1,53 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-} from '@nestjs/common';
-import { UserService } from '../services/user.service';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
-import { FindUserDto } from '../dto/find-user.dto';
+import { Controller, Post, Body } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { NoAuth } from 'src/helpers/NoAuthMetadata';
+import { AttendeesService } from 'src/attendees/services/attendees.service';
+import { ManufacturersService } from 'src/manufacturer/services/manufacturer.service';
+import { CreateAttendeeDto } from 'src/attendees/dto/create-attendee.dto';
+import { CreateManufacturerDto } from 'src/manufacturer/dto/create-manufacturer.dto';
 
-@Controller('user')
-@ApiTags('Users')
+@Controller()
+@ApiTags('Create user')
+@NoAuth()
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly attendeesService: AttendeesService,
+    private readonly manufacturersService: ManufacturersService,
+  ) {}
 
-  @Post()
-  @NoAuth()
-  @ApiOperation({ summary: 'Creates a user' })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @Post('create-attendee')
+  @ApiOperation({ summary: 'Creates an attendee' })
+  createAttendee(@Body() createAttendeeDto: CreateAttendeeDto) {
+    return this.attendeesService.create(createAttendeeDto);
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Get users through http query' })
-  findAll(@Query() query: FindUserDto) {
-    return this.userService.findAll(query);
+  @Post('create-manufacturer')
+  @ApiOperation({ summary: 'Creates a manufacturer' })
+  createManufacturer(@Body() createManufacturerDto: CreateManufacturerDto) {
+    return this.manufacturersService.create(createManufacturerDto);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get users by id' })
-  findOne(@Param('id') id: string) {
-    return this.userService.getById(+id);
-  }
+  // @Get()
+  // @ApiOperation({ summary: 'Get users through http query' })
+  // findAll(@Query() query: FindUserDto) {
+  //   return this.userService.findAll(query);
+  // }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update user partially' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
+  // @Get(':id')
+  // @ApiOperation({ summary: 'Get users by id' })
+  // findOne(@Param('id') id: string) {
+  //   return this.userService.getById(+id);
+  // }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete user' })
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
+  // @Patch(':id')
+  // @ApiOperation({ summary: 'Update user partially' })
+  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.userService.update(+id, updateUserDto);
+  // }
+
+  // @Delete(':id')
+  // @ApiOperation({ summary: 'Delete user' })
+  // remove(@Param('id') id: string) {
+  //   return this.userService.remove(+id);
+  // }
 }

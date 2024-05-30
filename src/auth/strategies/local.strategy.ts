@@ -10,6 +10,8 @@ import { IncomingMessage } from 'http';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Manufacturer } from 'src/manufacturer/entities/Manufacturer.entity';
+import { Attendee } from 'src/attendees/entities/attendee.entity';
 import { User } from 'src/user/entities/user.entity';
 
 const credentialsStructure = {
@@ -31,8 +33,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   private readonly logger = new Logger(LocalStrategy.name);
 
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>, // service not used to add security for retrieving passwords
+    @InjectRepository(Attendee)
+    private readonly attendeesRepository: Repository<Attendee>, // service not used to add security for retrieving passwords
+    @InjectRepository(Manufacturer)
+    private readonly manufacturerRepository: Repository<Manufacturer>, // service not used to add security for
     private readonly loginService: LoginService,
   ) {
     super({
@@ -48,11 +52,18 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     pass: string,
     _verified: VerifyFunctionWithRequest, // the same as this validate method (verify is used in plain js)
   ) {
-    const user = await this.userRepository
+    const attendee = await this.attendeesRepository
       .createQueryBuilder('u')
       .addSelect('u.password')
       .where({ username })
       .getOne();
+    const manufacturer = await this.manufacturerRepository
+      .createQueryBuilder('u')
+      .addSelect('u.password')
+      .where({ username })
+      .getOne();
+
+    const user: User = attendee || manufacturer;
 
     if (!user) this.err(`User '${username}' doesn't exist`);
 

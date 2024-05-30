@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -9,23 +8,14 @@ import {
   Query,
 } from '@nestjs/common';
 import { AttendeesService } from '../services/attendees.service';
-import { CreateAttendeeDto } from '../dto/create-attendee.dto';
 import { UpdateAttendeeDto } from '../dto/update-attendee.dto';
 import { FindAttendeeDto } from '../dto/find-attendee.dto';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Attendee } from '../entities/attendee.entity';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('attendees')
 @ApiTags('Attendees')
 export class AttendeesController {
   constructor(private readonly attendeesService: AttendeesService) {}
-
-  @Post()
-  @ApiOperation({ summary: 'Create atendee' })
-  @ApiCreatedResponse({ type: Attendee })
-  async create(@Body() createAttendeeDto: CreateAttendeeDto) {
-    return this.attendeesService.save(createAttendeeDto);
-  }
 
   @ApiOperation({ summary: 'Search atendees through query parameters' })
   @Get()

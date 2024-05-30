@@ -20,7 +20,7 @@ export class AttendeesService {
     private readonly attendeeRepository: Repository<Attendee>,
   ) {}
 
-  async save(createAttendeeDto: CreateAttendeeDto) {
+  async create(createAttendeeDto: CreateAttendeeDto) {
     return this.attendeeRepository.save(
       this.attendeeRepository.create(createAttendeeDto), // `.create` does not create id;
     );

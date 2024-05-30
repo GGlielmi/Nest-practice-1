@@ -2,7 +2,6 @@ import { ExecutionContext, Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { Observable } from 'rxjs';
 import configuration from 'src/config/configuration';
 import { NO_AUTH_METADATA } from 'src/helpers/NoAuthMetadata';
 
@@ -17,7 +16,11 @@ export class AuthGuardJwt extends AuthGuard('jwt') {
   }
   async canActivate(context: ExecutionContext) {
     if (this.configService.environment === 'development') {
-      await super.canActivate(context); //  needs to be executed to populate User in request
+      try {
+        await super.canActivate(context); //  needs to be executed to populate User in request
+      } catch (err) {
+        console.log(err);
+      }
       return true;
     }
     const noAuth = this.reflector.get<boolean>(
