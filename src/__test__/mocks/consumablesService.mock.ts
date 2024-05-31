@@ -1,11 +1,11 @@
-import { UpdateManufacturerDto } from 'src/manufacturer/dto/update-manufacturer.dto';
 import { CreateConsumableDto } from 'src/manufacturer/dto/create-consumable.dto';
 import { createConsumableDtoStub } from '../stubs/consumable.stub';
+import { UpdateConsumableDto } from 'src/manufacturer/dto/update-consumable.dto';
 
 export const ConsumablesServiceMock = jest.fn().mockImplementation(() => {
   return {
-    async create(createManufacturerDto: CreateConsumableDto) {
-      return { _id: 1, createManufacturerDto };
+    async create(createConsumableDto: CreateConsumableDto) {
+      return { _id: 1, createConsumableDto };
     },
     findAll() {
       return [[createConsumableDtoStub], 1];
@@ -13,8 +13,8 @@ export const ConsumablesServiceMock = jest.fn().mockImplementation(() => {
     getById() {
       return createConsumableDtoStub;
     },
-    update(updateManufacturerDto: Partial<UpdateManufacturerDto>) {
-      return { _id: 1, ...createConsumableDtoStub, ...updateManufacturerDto };
+    update(updateConsumableDto: Partial<UpdateConsumableDto>) {
+      return { _id: 1, ...createConsumableDtoStub, ...updateConsumableDto };
     },
     remove() {},
   };

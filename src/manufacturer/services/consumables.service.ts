@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateConsumableDto } from '../dto/create-consumable.dto';
 import { UpdateConsumableDto } from '../dto/update-consumable.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,16 +13,7 @@ export class ConsumablesService {
     private readonly consumableRepository: Repository<Consumable>,
   ) {}
   async create(createConsumableDto: CreateConsumableDto) {
-    try {
-      const consumable =
-        await this.consumableRepository.save(createConsumableDto);
-      return consumable;
-    } catch (err) {
-      if (err.driverError.code === '23503') {
-        throw new NotFoundException('Manufacturer not found');
-      }
-      throw err;
-    }
+    return this.consumableRepository.save(createConsumableDto);
   }
 
   findAll(query: FindConsumableDto) {

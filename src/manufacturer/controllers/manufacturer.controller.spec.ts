@@ -5,7 +5,6 @@ import { ConsumablesService } from '../services/consumables.service';
 import { ConsumablesServiceMock } from 'src/__test__/mocks/consumablesService.mock';
 import { createConsumableDtoStub } from 'src/__test__/stubs/consumable.stub';
 import { ManufacturersServiceMock } from 'src/__test__/mocks/manufacturersService.mock';
-import { FindConsumableDto } from '../dto/find-consumable.dto';
 import { ConsumableType } from '../entities/Consumable.entity';
 
 describe('ManufacturerController', () => {
@@ -41,7 +40,7 @@ describe('ManufacturerController', () => {
       expect(createSpy).toHaveBeenCalledTimes(1);
       expect(createSpy).toHaveBeenCalledWith(createConsumableDtoStub);
     });
-    it('should call .findAllConsumables on consumablesService with provided query', () => {
+    it('should call .findAllConsumables on consumablesService with provided query', async () => {
       const createSpy = jest.spyOn(consumablesService, 'findAll');
 
       const findAllConsumablesQuery = {
@@ -50,7 +49,7 @@ describe('ManufacturerController', () => {
         type: ConsumableType.SOUVENIR,
       };
 
-      controller.findAllConsumables(findAllConsumablesQuery);
+      await controller.findAllConsumables(findAllConsumablesQuery);
 
       expect(createSpy).toHaveBeenCalledTimes(1);
       expect(createSpy).toHaveBeenCalledWith(findAllConsumablesQuery);
