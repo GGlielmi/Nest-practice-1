@@ -37,7 +37,7 @@ export function WithPagination<T extends new (...args: any[]) => any>(
     }
 
     get skip() {
-      return (this.perPage - 1) * this.pageNumber;
+      return (this.perPage - 1) * (this.pageNumber - 1);
     }
 
     get limit() {
