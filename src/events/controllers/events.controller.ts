@@ -24,6 +24,7 @@ import { PaginationResultInterceptor } from 'src/interceptors/pagination-result/
 import { CurrentUser } from 'src/decorators/getUser.decorator';
 import { BaseEventDto } from '../dtos/BaseEvent.dto';
 import { User } from 'src/user/entities/user.entity';
+import { NoAuth } from 'src/decorators/NoAuthMetadata';
 
 @Controller('events')
 @ApiTags('Events')
@@ -32,6 +33,7 @@ export class EventsController {
 
   @UseInterceptors(PaginationResultInterceptor)
   @ApiOperation({ summary: 'Search events through query parameters' })
+  @NoAuth()
   @Get()
   find(
     @Query()
@@ -41,6 +43,7 @@ export class EventsController {
   }
 
   @ApiOperation({ summary: 'Get event by id' })
+  @NoAuth()
   @Get(':id')
   findById(
     @Param('id') id: number,
@@ -57,6 +60,7 @@ export class EventsController {
 
   @ApiOperation({ summary: 'Create event' })
   @ApiCreatedResponse()
+  @NoAuth()
   @Post()
   create(@Body() baseEventDto: BaseEventDto, @CurrentUser() user: User) {
     return this.eventService.save({

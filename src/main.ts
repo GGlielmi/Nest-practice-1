@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { EntityNotFoundInterceptor } from './interceptors/entity-not-found/entity-not-found.interceptor';
 import { UniqueConstraintErrorInterceptor } from './interceptors/unique-contraint-error/unique-constraint-error.interceptor';
+import { SerializerInterceptor } from './interceptors/serializer/serializer.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,6 +20,7 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new EntityNotFoundInterceptor());
   app.useGlobalInterceptors(new UniqueConstraintErrorInterceptor());
+  app.useGlobalInterceptors(new SerializerInterceptor());
 
   const config = new DocumentBuilder()
     .setTitle('Events API')

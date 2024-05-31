@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
 import { Attendee } from 'src/attendees/entities/attendee.entity';
 import { DOLAR_COST } from 'src/constants';
 import {
@@ -14,6 +13,7 @@ import {
 } from 'typeorm';
 import { EventAttendee } from './EventAttendee.entity';
 import { EventConsumable } from '../entities/EventConsumable.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Event {
@@ -21,6 +21,7 @@ export class Event {
   eventId: number;
 
   @Column()
+  @Exclude() // this works together with "SerializerInterceptor"
   organizerId: number;
 
   @ManyToOne(() => Attendee, (user) => user.events, {
@@ -84,4 +85,8 @@ export class Event {
   formatWhenField() {
     this.when = new Date(this.when);
   }
+
+  // toJSON() {
+  //   return instanceToPlain(this);
+  // }
 }
