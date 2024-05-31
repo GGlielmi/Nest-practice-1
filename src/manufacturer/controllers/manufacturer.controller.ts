@@ -90,7 +90,7 @@ export class ManufacturerController {
 
   @Get('consumables')
   @ApiOperation({ summary: 'Get consumables through http query' })
-  findAllConsumable(@Query() query: FindConsumableDto) {
+  findAllConsumables(@Query() query: FindConsumableDto) {
     return this.consumableService.findAll(query);
   }
 

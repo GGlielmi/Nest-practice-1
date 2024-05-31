@@ -2,7 +2,7 @@ import { CreateManufacturerDto } from 'src/manufacturer/dto/create-manufacturer.
 import { UpdateManufacturerDto } from 'src/manufacturer/dto/update-manufacturer.dto';
 import { createManufacturerDtoStub } from '../stubs/manufacturer.stub';
 
-export const ManufacturerServiceMock = jest.fn().mockImplementation(() => {
+export const ManufacturersServiceMock = jest.fn().mockImplementation(() => {
   return {
     async create(createManufacturerDto: CreateManufacturerDto) {
       return { _id: 1, createManufacturerDto };

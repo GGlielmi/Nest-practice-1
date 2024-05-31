@@ -3,8 +3,8 @@ import { UserController } from './user.controller';
 import { AttendeesService } from '../../attendees/services/attendees.service';
 import { ManufacturersService } from '../../manufacturer/services/manufacturer.service';
 import { createAttendeeDtoStub } from '../../__test__/stubs/attendee.stub';
-import { AttendeeServiceMock } from '../../__test__/mocks/attendeeService.mock';
-import { ManufacturerServiceMock } from '../../__test__/mocks/manufacturerService.mock';
+import { AttendeesServiceMock } from '../../__test__/mocks/attendeesService.mock';
+import { ManufacturersServiceMock } from '../../__test__/mocks/manufacturersService.mock';
 import { createManufacturerDtoStub } from 'src/__test__/stubs/manufacturer.stub';
 
 describe('UserController', () => {
@@ -16,8 +16,8 @@ describe('UserController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [
-        { provide: AttendeesService, useClass: AttendeeServiceMock },
-        { provide: ManufacturersService, useClass: ManufacturerServiceMock },
+        { provide: AttendeesService, useClass: AttendeesServiceMock },
+        { provide: ManufacturersService, useClass: ManufacturersServiceMock },
       ],
     }).compile();
 
