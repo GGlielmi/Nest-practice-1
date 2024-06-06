@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateEventDto } from '../dtos/CreateEvent.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsRelations, FindOptionsSelect, Repository } from 'typeorm';
@@ -9,6 +13,7 @@ import { EventAttendeeService } from './eventAttendees.service';
 import { EventConsumableService } from './eventConsumables.service';
 import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
 import { UpdateEventDto } from '../dtos/UpdateEvent.dto';
+import responseMessages from 'src/constants/responseMessages';
 
 @Injectable()
 export class EventsService {
@@ -33,7 +38,7 @@ export class EventsService {
     });
   }
 
-  save(input: CreateEventDto) {
+  create(input: CreateEventDto) {
     return this.eventRepository.save(this.eventRepository.create(input)); // `.save()` inserts if doesn't exist
   }
 
@@ -74,11 +79,6 @@ export class EventsService {
     });
   }
 
-  async checkExistence(eventId: number) {
-    const exists = await this.eventRepository.existsBy({ eventId });
-    if (!exists) throw new NotFoundException();
-  }
-
   async update(eventId: number, organizerId: number, event: UpdateEventDto) {
     const result = await this.eventRepository.update(
       { eventId, organizerId },
@@ -102,8 +102,24 @@ export class EventsService {
   ) {
     const event = await this.getById({ eventId, organizerId });
     const attendee = await this.attendeeService.getById(attendeeId);
-    await this.eventRepository.manager.transaction(async (manager) => {
-      await this.eventAttendeeService.create(event, attendee, manager);
+
+    // if (attendee.funds < event.cost) {
+    //   throw new BadRequestException(
+    //     responseMessages.events.attendeeInsufficientFunds,
+    //   );
+    // }
+    if (event.minRequiredAge > attendee.age) {
+      throw new BadRequestException(responseMessages.events.attendeeUnderaged);
+    }
+
+    await this.eventRepository.manager.transaction(async (m) => {
+      await this.eventAttendeeService.create(
+        event.eventId,
+        attendee.attendeeId,
+        m,
+      );
+      attendee.funds = attendee.funds - event.cost;
+      await this.attendeeService.update(attendeeId, attendee, m);
     });
   }
 
@@ -112,7 +128,7 @@ export class EventsService {
     eventId: number,
     organizerId: number,
   ) {
-    await this.eventAttendeeService.delete(eventId, attendeeId, organizerId);
+    await this.eventAttendeeService.delete(attendeeId, eventId, organizerId);
   }
 
   async addConsumableToEvent(

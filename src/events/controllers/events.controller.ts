@@ -63,7 +63,7 @@ export class EventsController {
   @NoAuth()
   @Post()
   create(@Body() baseEventDto: BaseEventDto, @CurrentUser() user: User) {
-    return this.eventService.save({
+    return this.eventService.create({
       ...baseEventDto,
       organizerId: user.userId,
     });

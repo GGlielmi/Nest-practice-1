@@ -35,7 +35,7 @@ export class AttendeesController {
     @Param('id') id: number,
     @Body() updateAttendeeDto: UpdateAttendeeDto,
   ) {
-    return this.attendeesService.update({ ...updateAttendeeDto, id });
+    return this.attendeesService.update(id, updateAttendeeDto);
   }
 
   @ApiOperation({ summary: 'Delete atendee' })

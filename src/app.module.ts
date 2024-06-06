@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import configuration from './config/configuration';
 import { EventsModule } from './events/Event.module';
 import { AttendeesModule } from './attendees/attendees.module';
 import { ManufacturerModule } from './manufacturer/manufacturer.module';
@@ -11,12 +10,13 @@ import { UserModule } from './user/user.module';
 import { LoginModule } from './login/login.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuardJwt } from './auth/guards/auth-guard.jwt';
+import { OrganizersModule } from './organizers/organizers.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration],
+      load: [config],
       expandVariables: true,
     }),
     TypeOrmModule.forRootAsync({
@@ -37,6 +37,7 @@ import { AuthGuardJwt } from './auth/guards/auth-guard.jwt';
     ManufacturerModule,
     UserModule,
     LoginModule,
+    OrganizersModule,
   ],
   providers: [
     {

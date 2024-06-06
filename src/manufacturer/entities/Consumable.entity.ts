@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { EventConsumable } from '../../events/entities/EventConsumable.entity';
 import { Manufacturer } from 'src/manufacturer/entities/Manufacturer.entity';
-import { CONSUMABLE_BRAND_INDEX } from 'src/constants/uniqueIndexes';
+import { CONSUMABLE_BRAND_INDEX } from 'src/constants/constraints';
 
 export enum ConsumableType {
   DRINK = 'drink',

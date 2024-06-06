@@ -3,7 +3,7 @@ import { CreateAttendeeDto } from '../dto/create-attendee.dto';
 import { UpdateAttendeeDto } from '../dto/update-attendee.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Attendee } from '../entities/attendee.entity';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { FindAttendeeDto } from '../dto/find-attendee.dto';
 
 // await this.attendeeRepository
@@ -31,17 +31,28 @@ export class AttendeesService {
   }
 
   async getById(id: number) {
-    return this.attendeeRepository.findOneByOrFail({ userId: id });
+    return this.attendeeRepository.findOneByOrFail({ attendeeId: id });
   }
 
   async checkExistence(id: number) {
-    const exists = await this.attendeeRepository.existsBy({ userId: id });
+    const exists = await this.attendeeRepository.existsBy({ attendeeId: id });
     if (!exists) throw new NotFoundException();
   }
 
-  async update(updateAttendeeDto: UpdateAttendeeDto) {
-    await this.checkExistence(updateAttendeeDto.id);
-    return this.attendeeRepository.save(updateAttendeeDto); // save inserts if doesn't exist
+  async update(
+    attendeeId: number,
+    updateAttendeeDto: UpdateAttendeeDto,
+    entityManager?: EntityManager,
+  ) {
+    return entityManager
+      ? entityManager.save(Attendee, {
+          userId: attendeeId,
+          ...updateAttendeeDto,
+        })
+      : this.attendeeRepository.save({
+          userId: attendeeId,
+          ...updateAttendeeDto,
+        }); // save inserts if doesn't exist
   }
 
   async remove(id: number) {

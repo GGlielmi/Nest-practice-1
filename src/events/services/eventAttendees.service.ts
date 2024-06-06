@@ -1,45 +1,37 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { EventAttendee } from '../entities/EventAttendee.entity';
-import { Attendee } from 'src/attendees/entities/attendee.entity';
-import { Event } from '../entities/Event.entity';
 
 @Injectable()
 export class EventAttendeeService {
+  // it's easier to use an explicit join table entity to throw explicit errors when one of the sides, or the relation, don't exist
   constructor(
     @InjectRepository(EventAttendee)
     private readonly eventAttendeesRepository: Repository<EventAttendee>,
   ) {}
 
-  private findOne(eventId: number, attendeeId: number, organizerId: number) {
-    return this.eventAttendeesRepository.findOne({
+  private getOne(eventId: number, attendeeId: number, organizerId: number) {
+    return this.eventAttendeesRepository.findOneOrFail({
       where: { eventId, attendeeId, event: { organizerId } },
-      relations: ['event', 'attendee'],
+      relations: { event: true },
+      select: {
+        event: { organizerId: true },
+      },
     });
   }
 
-  async getOne(eventId: number, attendeeId: number, organizerId: number) {
-    const eventAttendee = await this.findOne(eventId, attendeeId, organizerId);
-    if (!eventAttendee) throw new NotFoundException();
-    return eventAttendee;
-  }
-
-  async create(event: Event, attendee: Attendee, manager?: EntityManager) {
+  async create(eventId: number, attendeeId: number, manager: EntityManager) {
     await manager.save(
       this.eventAttendeesRepository.create({
-        event,
-        attendee,
-        eventId: event.eventId,
-        attendeeId: attendee.userId,
+        eventId,
+        attendeeId,
       }),
     );
-    attendee.funds -= event.cost;
-    await manager.save(attendee);
   }
 
   async delete(eventId: number, attendeeId: number, organizerId: number) {
-    const eventAttendee = await this.findOne(eventId, attendeeId, organizerId);
-    return this.eventAttendeesRepository.remove(eventAttendee);
+    const eventAttendee = await this.getOne(eventId, attendeeId, organizerId);
+    await this.eventAttendeesRepository.remove(eventAttendee);
   }
 }

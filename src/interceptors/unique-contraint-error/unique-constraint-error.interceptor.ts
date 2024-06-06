@@ -6,7 +6,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Observable, catchError, throwError } from 'rxjs';
-import * as uniqueContraints from 'src/constants/uniqueIndexes';
+import * as uniqueContraints from 'src/constants/constraints';
 import { QueryFailedError } from 'typeorm';
 
 @Injectable()

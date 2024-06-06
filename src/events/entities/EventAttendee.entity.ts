@@ -27,29 +27,29 @@ export class EventAttendee {
     onDelete: 'CASCADE', // if I delete an event, the eventAttendee should be deleted
   })
   @JoinColumn({ name: 'eventId' })
-  public event: Event;
+  event: Event;
 
   @ManyToOne(() => Attendee, (attendee) => attendee.eventAttendees, {
     onDelete: 'CASCADE', // if I delete an an attendee, the eventAttendee should be deleted
   })
   @JoinColumn({ name: 'attendeeId' })
-  public attendee: Attendee;
+  attendee: Attendee;
 
-  @BeforeUpdate()
-  @BeforeInsert()
-  checkAttendeeFunds() {
-    if (this.attendee.funds < this.event.cost) {
-      throw new BadRequestException(
-        responseMessages.events.attendeeInsufficientFunds,
-      );
-    }
-  }
+  // @BeforeUpdate()
+  // @BeforeInsert()
+  // checkAttendeeFunds() {
+  //   if (this.attendee.funds < this.event.cost) {
+  //     throw new BadRequestException(
+  //       responseMessages.events.attendeeInsufficientFunds,
+  //     );
+  //   }
+  // }
 
-  @BeforeUpdate()
-  @BeforeInsert()
-  checkIfAttendeeIsAgeApropriate() {
-    if (this.event.minRequiredAge > this.attendee.age) {
-      throw new BadRequestException(responseMessages.events.attendeeUnderaged);
-    }
-  }
+  // @BeforeUpdate()
+  // @BeforeInsert()
+  // checkIfAttendeeIsAgeApropriate() {
+  //   if (this.event.minRequiredAge > this.attendee.age) {
+  //     throw new BadRequestException(responseMessages.events.attendeeUnderaged);
+  //   }
+  // }
 }

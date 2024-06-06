@@ -2,8 +2,6 @@ import { Attendee } from 'src/attendees/entities/attendee.entity';
 import { DOLAR_COST } from 'src/constants';
 import {
   AfterLoad,
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   Entity,
   JoinColumn,
@@ -14,9 +12,21 @@ import {
 import { EventAttendee } from './EventAttendee.entity';
 import { EventConsumable } from '../entities/EventConsumable.entity';
 import { Exclude } from 'class-transformer';
+import { CreateEventDto } from '../dtos/CreateEvent.dto';
+import { Organizer } from 'src/organizers/entities/Organizer.entity';
 
 @Entity()
 export class Event {
+  constructor(createEventDto: Partial<CreateEventDto> = {}) {
+    this.name = createEventDto.name;
+    this.description = createEventDto.description;
+    this.when = createEventDto.when;
+    this.address = createEventDto.address;
+    this.minRequiredAge = createEventDto.minRequiredAge;
+    this.cost = createEventDto.cost;
+    this.duration = createEventDto.duration;
+    this.organizerId = createEventDto.organizerId;
+  }
   @PrimaryGeneratedColumn() // with autoincrement
   eventId: number;
 
@@ -24,12 +34,9 @@ export class Event {
   @Exclude() // this works together with "SerializerInterceptor"
   organizerId: number;
 
-  @ManyToOne(() => Attendee, (user) => user.events, {
-    nullable: false,
-    onUpdate: 'CASCADE',
-  })
+  @ManyToOne(() => Organizer, (organizer) => organizer.events)
   @JoinColumn({ name: 'organizerId' })
-  organizer: Attendee;
+  organizer: Organizer;
 
   @Column()
   name: string;
@@ -78,12 +85,6 @@ export class Event {
     finishDate.setMinutes(finishDate.getMinutes() + +minutes);
     finishDate.setSeconds(finishDate.getSeconds() + +seconds);
     this.finishDate = finishDate;
-  }
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  formatWhenField() {
-    this.when = new Date(this.when);
   }
 
   // toJSON() {

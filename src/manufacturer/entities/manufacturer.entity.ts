@@ -1,7 +1,7 @@
 import {
   manufacturerEmailIndex,
   manufacturerUsernameIndex,
-} from 'src/constants/uniqueIndexes';
+} from 'src/constants/constraints';
 import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Column, Entity, Index, OneToMany } from 'typeorm';
