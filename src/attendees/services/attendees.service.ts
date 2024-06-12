@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Attendee } from '../entities/attendee.entity';
 import { EntityManager, Repository } from 'typeorm';
 import { FindAttendeeDto } from '../dto/find-attendee.dto';
+import { Query, Resolver } from '@nestjs/graphql';
 
 // await this.attendeeRepository
 //   .createQueryBuilder()
@@ -21,11 +22,13 @@ export class AttendeesService {
   ) {}
 
   async create(createAttendeeDto: CreateAttendeeDto) {
-    return this.attendeeRepository.save(
+    const attendee = await this.attendeeRepository.save(
       this.attendeeRepository.create(createAttendeeDto), // `.create` does not create id;
     );
+    return attendee.attendeeId;
   }
 
+  @Query(() => [CreateAttendeeDto])
   findAll(findAttendeeDto: FindAttendeeDto) {
     return this.attendeeRepository.findBy(findAttendeeDto);
   }

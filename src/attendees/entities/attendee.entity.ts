@@ -1,16 +1,11 @@
 import { DOLAR_COST } from 'src/constants';
-import {
-  ATTENDEE_INSSUFICIENT_FUNDS_CONSTRAINT,
-  attendeeEmailIndex,
-  attendeeUsernameIndex,
-} from 'src/constants/constraints';
+import { ATTENDEE_INSSUFICIENT_FUNDS_CONSTRAINT } from 'src/constants/constraints';
 import { Event } from 'src/events/entities/Event.entity';
 import { EventAttendee } from 'src/events/entities/EventAttendee.entity';
 import {
   Check,
   Column,
   Entity,
-  Index,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -22,19 +17,13 @@ export class Attendee {
   @PrimaryGeneratedColumn()
   attendeeId: number;
 
-  constructor(createAttendeeDto: Partial<CreateAttendeeDto> = {}) {
-    this.name = createAttendeeDto.name;
-    this.age = createAttendeeDto.age;
-    this.funds = createAttendeeDto.funds;
-  }
+  // constructor(createAttendeeDto: Partial<CreateAttendeeDto> = {}) {
+  //   this.name = createAttendeeDto.name;
+  //   this.age = createAttendeeDto.age;
+  //   this.funds = createAttendeeDto.funds;
+  // }
   static role = 'Attendee' as const;
   role = Attendee.role;
-
-  @Index(attendeeUsernameIndex.constraint, { unique: true })
-  username: string;
-
-  @Index(attendeeEmailIndex.constraint, { unique: true })
-  email: string;
 
   @Column()
   name: string;
@@ -56,7 +45,7 @@ export class Attendee {
   @OneToMany(() => EventAttendee, (eventAttendee) => eventAttendee.attendee, {
     onDelete: 'CASCADE', // if I delete an event, the eventAttendee should be deleted
   })
-  eventAttendees: EventAttendee[];
+  eventsToAttend: Promise<EventAttendee[]>;
 
   @OneToMany(() => Event, (event) => event.organizer, {
     onDelete: 'CASCADE',

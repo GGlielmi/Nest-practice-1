@@ -7,8 +7,12 @@ import { Repository } from 'typeorm';
 import { FindManufacturerDto } from '../dto/find-manufacturer.dto';
 import { ConsumablesService } from './consumables.service';
 import { EventsService } from 'src/events/services/events.service';
+import { CurrentUser } from 'src/decorators/getUser.decorator';
+import { User } from 'src/user/entities/user.entity';
+import { Query, Resolver } from '@nestjs/graphql';
 
 @Injectable()
+@Resolver(Manufacturer)
 export class ManufacturersService {
   constructor(
     @InjectRepository(Manufacturer)
@@ -17,10 +21,11 @@ export class ManufacturersService {
     private readonly eventService: EventsService,
   ) {}
 
-  create(createManufacturerDto: CreateManufacturerDto) {
-    return this.manufacturerRepository.save(
+  async create(createManufacturerDto: CreateManufacturerDto) {
+    const manufacturer = await this.manufacturerRepository.save(
       this.manufacturerRepository.create(createManufacturerDto),
     );
+    return manufacturer.userId;
   }
 
   findAll(query: FindManufacturerDto) {
@@ -78,5 +83,10 @@ export class ManufacturersService {
       consumable,
       manufacturerId,
     });
+  }
+
+  @Query(() => Manufacturer)
+  me(@CurrentUser() user: User) {
+    return this.manufacturerRepository.findOneBy({ userId: user.userId });
   }
 }

@@ -4,52 +4,38 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   Column,
-  BeforeUpdate,
-  BeforeInsert,
   JoinColumn,
 } from 'typeorm';
 import { Event } from './Event.entity';
-import { BadRequestException } from '@nestjs/common';
-import responseMessages from 'src/constants/responseMessages';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
+@ObjectType()
 export class EventAttendee {
   @PrimaryGeneratedColumn()
   public eventAttendeeId: number;
 
+  // @Field(() => Event)
+  @ManyToOne(() => Event, (event) => event.eventId, {
+    onDelete: 'CASCADE', // if I delete an event, the eventAttendee should be deleted
+    // lazy: true,
+    // cascade: true,
+  })
+  @JoinColumn({ name: 'eventId' })
+  event: Promise<Event>;
+
   @Column()
   eventId: number;
 
-  @Column()
-  attendeeId: number;
-
-  @ManyToOne(() => Event, (event) => event.eventAttendees, {
-    onDelete: 'CASCADE', // if I delete an event, the eventAttendee should be deleted
-  })
-  @JoinColumn({ name: 'eventId' })
-  event: Event;
-
-  @ManyToOne(() => Attendee, (attendee) => attendee.eventAttendees, {
+  @ManyToOne(() => Attendee, (attendee) => attendee.eventsToAttend, {
     onDelete: 'CASCADE', // if I delete an an attendee, the eventAttendee should be deleted
   })
   @JoinColumn({ name: 'attendeeId' })
-  attendee: Attendee;
+  attendee: Promise<Attendee>;
 
-  // @BeforeUpdate()
-  // @BeforeInsert()
-  // checkAttendeeFunds() {
-  //   if (this.attendee.funds < this.event.cost) {
-  //     throw new BadRequestException(
-  //       responseMessages.events.attendeeInsufficientFunds,
-  //     );
-  //   }
-  // }
-
-  // @BeforeUpdate()
-  // @BeforeInsert()
-  // checkIfAttendeeIsAgeApropriate() {
-  //   if (this.event.minRequiredAge > this.attendee.age) {
-  //     throw new BadRequestException(responseMessages.events.attendeeUnderaged);
-  //   }
-  // }
+  @Column()
+  @Field()
+  @ApiProperty()
+  attendeeId: number;
 }

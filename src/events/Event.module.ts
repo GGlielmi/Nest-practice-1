@@ -9,6 +9,7 @@ import { EventAttendeeService } from './services/eventAttendees.service';
 import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
 import { EventConsumableService } from './services/eventConsumables.service';
 import { EventConsumable } from './entities/EventConsumable.entity';
+import { EventsResolver } from './services/events.resolver';
 
 @Module({
   imports: [
@@ -21,7 +22,12 @@ import { EventConsumable } from './entities/EventConsumable.entity';
     AttendeesModule,
   ],
   controllers: [EventsController],
-  providers: [EventsService, EventAttendeeService, EventConsumableService],
+  providers: [
+    EventsService,
+    EventAttendeeService,
+    EventConsumableService,
+    EventsResolver,
+  ],
   exports: [EventsService],
 })
 export class EventsModule {}

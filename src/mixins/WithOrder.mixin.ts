@@ -1,3 +1,4 @@
+import { InputType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsIn } from 'class-validator';
 import { orderDirection } from 'src/constants/db';
@@ -11,6 +12,7 @@ export function WithOrder<
   T extends new (...args: any[]) => any,
   TOrderByKeys extends (keyof InstanceType<T>)[],
 >(Base: T, orderByKeys: TOrderByKeys) {
+  @InputType({ isAbstract: true })
   class OrderClass extends Base implements IFindOrderParams<T> {
     @IsOptional()
     @ApiProperty({

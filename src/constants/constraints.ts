@@ -3,19 +3,9 @@ type TConstraintObject = { constraint: string; message: string };
 const usernameMessage = 'Username is already taken';
 const emailMessage = 'Email is already taken';
 
-export const attendeeUsernameIndex: TConstraintObject = {
-  constraint: 'UQ_attendee_username',
-  message: usernameMessage,
-};
-
 export const manufacturerUsernameIndex: TConstraintObject = {
   constraint: 'UQ_manufacturer_username',
   message: usernameMessage,
-};
-
-export const attendeeEmailIndex: TConstraintObject = {
-  constraint: 'UQ_attendee_email',
-  message: emailMessage,
 };
 
 export const manufacturerEmailIndex: TConstraintObject = {

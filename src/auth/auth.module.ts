@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { LocalStrategy } from './strategies/local.strategy';
 import { LoginModule } from 'src/login/login.module';
 import { AuthController } from './auth.controller';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -11,6 +11,8 @@ import { Manufacturer } from 'src/manufacturer/entities/Manufacturer.entity';
 import { Attendee } from 'src/attendees/entities/attendee.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ManufacturerModule } from 'src/manufacturer/manufacturer.module';
+import { AuthResolver } from './auth.resolver';
+import { AuthGuardJwt } from './guards/auth-guard.jwt';
 
 @Module({
   imports: [
@@ -30,6 +32,14 @@ import { ManufacturerModule } from 'src/manufacturer/manufacturer.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [LocalStrategy, JwtStrategy, AuthService],
+  providers: [
+    LocalStrategy,
+    JwtStrategy,
+    AuthGuardJwt,
+    AuthService,
+    AuthResolver,
+    JwtService,
+  ],
+  exports: [JwtStrategy, JwtService],
 })
 export class AuthModule {}

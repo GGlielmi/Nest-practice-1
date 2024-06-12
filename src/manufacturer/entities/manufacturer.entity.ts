@@ -1,3 +1,4 @@
+import { Field, ObjectType } from '@nestjs/graphql';
 import {
   manufacturerEmailIndex,
   manufacturerUsernameIndex,
@@ -7,6 +8,7 @@ import { User } from 'src/user/entities/user.entity';
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 
 @Entity()
+@ObjectType()
 export class Manufacturer extends User {
   static role = 'Manufacturer' as const;
   role = Manufacturer.role;
@@ -18,6 +20,7 @@ export class Manufacturer extends User {
   email: string;
 
   @Column()
+  @Field()
   brand: string;
 
   @OneToMany(() => Consumable, (consumable) => consumable.manufacturer, {

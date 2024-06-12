@@ -3,17 +3,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateEventDto } from '../dtos/CreateEvent.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsRelations, FindOptionsSelect, Repository } from 'typeorm';
-import { Event } from '../entities/Event.entity';
-import { EventFindParams } from '../params/eventFind.dto';
 import { AttendeesService } from 'src/attendees/services/attendees.service';
+import responseMessages from 'src/constants/responseMessages';
+import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
+import { FindOptionsRelations, FindOptionsSelect, Repository } from 'typeorm';
+import { CreateEventDto } from '../dtos/CreateEvent.dto';
+import { UpdateEventGqlDto } from '../dtos/UpdateEvent.dto';
+import { Event } from '../entities/Event.entity';
+import { EventAttendee } from '../entities/EventAttendee.entity';
+import { EventFindParams } from '../params/eventFind.dto';
 import { EventAttendeeService } from './eventAttendees.service';
 import { EventConsumableService } from './eventConsumables.service';
-import { Consumable } from 'src/manufacturer/entities/Consumable.entity';
-import { UpdateEventDto } from '../dtos/UpdateEvent.dto';
-import responseMessages from 'src/constants/responseMessages';
 
 @Injectable()
 export class EventsService {
@@ -25,17 +26,18 @@ export class EventsService {
     private readonly eventConsumableService: EventConsumableService,
   ) {}
 
-  find(
+  async find(
     eventFindParams: EventFindParams, // a class is needed to use more functionality besides typing, like validation
     relations: FindOptionsRelations<Event> = {},
   ) {
-    return this.eventRepository.findAndCount({
+    const resources = await this.eventRepository.find({
       where: eventFindParams.getWhereParams(),
       order: eventFindParams.getOrderParam(),
       relations,
       ...(eventFindParams.take && { take: eventFindParams.take }),
       ...(eventFindParams.skip && { skip: eventFindParams.skip }),
     });
+    return { resources, total: 3 };
   }
 
   create(input: CreateEventDto) {
@@ -60,7 +62,7 @@ export class EventsService {
         organizerId: number;
       }
   )) {
-    return this.eventRepository.findOneOrFail({
+    const event = await this.eventRepository.findOneOrFail({
       where: {
         eventId,
         ...(organizerId && { organizerId }),
@@ -77,9 +79,14 @@ export class EventsService {
           : []),
       ],
     });
+    let attendees: EventAttendee[];
+    if (select?.['eventAttendees']) {
+      attendees = await event.eventAttendees;
+    }
+    return { ...event, eventAttendees: attendees };
   }
 
-  async update(eventId: number, organizerId: number, event: UpdateEventDto) {
+  async update(eventId: number, organizerId: number, event: UpdateEventGqlDto) {
     const result = await this.eventRepository.update(
       { eventId, organizerId },
       event,

@@ -11,6 +11,8 @@ import { LoginModule } from './login/login.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuardJwt } from './auth/guards/auth-guard.jwt';
 import { OrganizersModule } from './organizers/organizers.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 @Module({
   imports: [
@@ -30,6 +32,12 @@ import { OrganizersModule } from './organizers/organizers.module';
           synchronize: environment === 'development',
         };
       },
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: true,
+      playground: true,
+      sortSchema: true,
     }),
     AuthModule,
     EventsModule,

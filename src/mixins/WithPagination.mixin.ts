@@ -1,3 +1,4 @@
+import { Field, InputType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsNumber, Min, Max } from 'class-validator';
 
@@ -18,18 +19,21 @@ export function WithPagination<T extends new (...args: any[]) => any>(
   perPageMax = 10,
   fromPageDefault = 1,
 ) {
+  @InputType({ isAbstract: true })
   class FindClass extends Base implements IPagination {
     @IsOptional()
     @IsNumber()
     @Min(1)
     @Max(perPageMax)
     @ApiProperty({ required: false, default: perPageMax })
+    @Field({ nullable: true })
     perPage: number = perPageMax;
 
     @IsOptional()
     @IsNumber()
     @Min(1)
     @ApiProperty({ required: false, default: fromPageDefault })
+    @Field({ nullable: true })
     pageNumber: number = fromPageDefault;
 
     get take() {
@@ -37,7 +41,7 @@ export function WithPagination<T extends new (...args: any[]) => any>(
     }
 
     get skip() {
-      return (this.perPage - 1) * (this.pageNumber - 1);
+      return this.perPage * (this.pageNumber - 1);
     }
 
     get limit() {

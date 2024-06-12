@@ -13,10 +13,11 @@ export class OrganizersService {
     private readonly organizerRepository: Repository<Organizer>,
   ) {}
 
-  create(createOrganizerDto: CreateOrganizerDto) {
-    return this.organizerRepository.save(
+  async create(createOrganizerDto: CreateOrganizerDto) {
+    const organizer = await this.organizerRepository.save(
       this.organizerRepository.create(createOrganizerDto),
     );
+    return organizer.userId;
   }
 
   findAll(query: FindOrganizerDto) {

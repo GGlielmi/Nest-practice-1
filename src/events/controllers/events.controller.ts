@@ -7,7 +7,6 @@ import {
   Patch,
   Post,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 import { UpdateEventDto } from '../dtos/UpdateEvent.dto';
 import { EventFindParams } from '../params/eventFind.dto';
@@ -16,11 +15,11 @@ import {
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { GetEvent } from '../dtos/GetEvent.dto';
-import { PaginationResultInterceptor } from 'src/interceptors/pagination-result/pagination-result.interceptor';
+import { GetEventDto, GetEventsResponse } from '../dtos/GetEvent.dto';
 import { CurrentUser } from 'src/decorators/getUser.decorator';
 import { BaseEventDto } from '../dtos/BaseEvent.dto';
 import { User } from 'src/user/entities/user.entity';
@@ -31,15 +30,17 @@ import { NoAuth } from 'src/decorators/NoAuthMetadata';
 export class EventsController {
   constructor(private readonly eventService: EventsService) {}
 
-  @UseInterceptors(PaginationResultInterceptor)
   @ApiOperation({ summary: 'Search events through query parameters' })
+  @ApiOkResponse({ type: GetEventsResponse })
   @NoAuth()
-  @Get()
+  @Get() // graphql doesn't use these endpoints
   find(
     @Query()
     params: EventFindParams, // a class is needed to use more functionality besides typing, like validation
   ) {
-    return this.eventService.find(params);
+    return this.eventService.find(params, {
+      eventAttendees: true,
+    });
   }
 
   @ApiOperation({ summary: 'Get event by id' })
@@ -48,7 +49,7 @@ export class EventsController {
   findById(
     @Param('id') id: number,
     @CurrentUser() user: User,
-  ): Promise<GetEvent> {
+  ): Promise<GetEventDto> {
     return this.eventService.getById({
       eventId: id,
       organizerId: user.userId,
